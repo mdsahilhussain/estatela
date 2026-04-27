@@ -5,6 +5,9 @@
     "source.sortMembers": "explicit"
   },
   "cSpell.words": [
-    "nativewind"
+    "ellipsize",
+    "nativewind",
+    "Pressable",
+    "wordmark"
   ]
 }

@@ -86,7 +86,7 @@
     }
 
     .home-add-icon {
-        @apply size-12;
+        @apply size-12 p-2.5 rounded-full border-[.8px] border-black/40 items-center justify-center;
     }
 
     .home-balance-card {
@@ -133,8 +133,8 @@
         @apply flex-row items-center gap-3;
     }
 
-    .upcoming-icon {
-        @apply size-14;
+    .upcoming-icon-container{
+        @apply size-11 p-1.5 items-center justify-center rounded-lg bg-muted;
     }
 
     .upcoming-price {
@@ -166,7 +166,7 @@
     }
 
     .sub-icon {
-        @apply size-16 rounded-lg;
+        @apply size-16 rounded-lg p-2 bg-muted/60;
     }
 
     .sub-copy {
