@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "recurrly",
-    "slug": "recurrly",
+    "name": "estatela",
+    "slug": "estatela",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "recurrly",
+    "scheme": "estatela",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -42,13 +42,14 @@
       [
         "expo-font",
         {
-          "fonts": [
-            "./assets/fonts/PlusJakartaSans-Light.ttf",
-            "./assets/fonts/PlusJakartaSans-Regular.ttf",
-            "./assets/fonts/PlusJakartaSans-Medium.ttf",
-            "./assets/fonts/PlusJakartaSans-SemiBold.ttf",
-            "./assets/fonts/PlusJakartaSans-Bold.ttf",
-            "./assets/fonts/PlusJakartaSans-ExtraBold.ttf"
+          "font": [
+            "./assets/fonts/Mulish-ExtraLight.ttf",
+            "./assets/fonts/Mulish-Light.ttf",
+            "./assets/fonts/Mulish-Regular.ttf",
+            "./assets/fonts/Mulish-Medium.ttf",
+            "./assets/fonts/Mulish-SemiBold.ttf",
+            "./assets/fonts/Mulish-Bold.ttf",
+            "./assets/fonts/Mulish-ExtraBold.ttf"
           ]
         }
       ]
