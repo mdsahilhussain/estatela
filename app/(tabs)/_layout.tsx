@@ -1,5 +1,6 @@
 import { tabs } from '@/constants/data'
 import { colors, components } from '@/constants/theme'
+import { useUserSync } from '@/hooks/useUserSync'
 import { useAuth } from '@clerk/expo'
 import { Redirect, Tabs } from 'expo-router'
 import React from 'react'
@@ -24,8 +25,10 @@ export default function TabLayout() {
     const { isSignedIn, isLoaded } = useAuth();
     const insets = useSafeAreaInsets();
 
-    if (!isLoaded) return null;
+    // sync Clerk user -> supabase
+    useUserSync()
 
+    if (!isLoaded) return null;
     if (!isSignedIn) {
         return <Redirect href="/(auth)/sign-in" />;
     }

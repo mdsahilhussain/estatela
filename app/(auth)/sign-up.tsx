@@ -70,7 +70,7 @@ export default function SignUp() {
             return;
           }
 
-          const url = decorateUrl('/(tabs)/index');
+          const url = decorateUrl('/(tabs)');
           if (url.startsWith('http')) {
             // Only use window.location on web platform
             if (typeof window !== 'undefined' && window.location) {

@@ -31,7 +31,7 @@ export default function SignIn() {
 
     try {
       const { error } = await signIn.password({
-        emailAddress,
+        emailAddress: emailAddress,
         password
       })
 
@@ -39,7 +39,7 @@ export default function SignIn() {
         alert(error.message)
         return
       }
-
+      console.log(signIn.status, "11111")
       if (signIn.status === 'complete') {
         await signIn.finalize({
           navigate: ({ session, decorateUrl }) => {
@@ -48,7 +48,7 @@ export default function SignIn() {
               return
             }
 
-            const url = decorateUrl('/(tabs)/index')
+            const url = decorateUrl('/(tabs)')
 
             if (url.startsWith('http')) {
               if (typeof window !== 'undefined' && window.location) {
@@ -63,12 +63,13 @@ export default function SignIn() {
         })
       } else if (signIn.status === "needs_second_factor") {
         // Handle MFA if needed (not implemented in this basic flow)
+        // await signIn.mfa.sendPhoneCode();
+        await signIn.mfa.sendEmailCode();
         console.log('MFA required');
       } else if (signIn.status === 'needs_client_trust') {
         const emailCodeFactor = signIn.supportedSecondFactors.find(
           (factor) => factor.strategy === 'email_code'
         )
-
         if (emailCodeFactor) {
           await signIn.mfa.sendEmailCode();
         }
@@ -130,7 +131,7 @@ export default function SignIn() {
   }
 
   // Show verification screen if email needs verification
-  if (signIn.status === 'needs_client_trust') {
+  if (signIn.status === 'needs_client_trust' || signIn.status === 'needs_second_factor') {
     return (
       <SafeAreaView className="auth-safe-area">
         <KeyboardAvoidingView
