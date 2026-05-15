@@ -1,4 +1,5 @@
 import "@/global.css";
+import { useUserSync } from "@/hooks/useUserSync";
 import { ClerkProvider, useAuth } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
 import { useFonts } from 'expo-font';
@@ -29,6 +30,9 @@ const RootLayoutContent = () => {
       SplashScreen.hideAsync();
     }
   }, [fontLoaded, authLoaded]);
+
+  // sync Clerk user -> supabase
+  useUserSync()
 
   if (!fontLoaded || !authLoaded) return null
 

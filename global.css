@@ -60,7 +60,11 @@
   }
 
   .tabs-pill {
-    @apply size-12 flex-row items-center gap-1 bg-transparent;
+    @apply size-12 items-center justify-center rounded-full bg-transparent;
+  }
+
+  .tabs-active {
+    @apply bg-accent;
   }
 
   .tabs-glyph {
@@ -71,6 +75,10 @@
     @apply text-xs text-background;
   }
 
+  /* 
+  Title: Authentication Pages style
+  Description: 
+  */
   .auth-safe-area {
     @apply flex-1 bg-background p-6;
   }
@@ -181,4 +189,111 @@
   .auth-link {
     @apply text-sm font-sans-bold text-accent underline-offset-2  hover:underline focus:outline-none focus:underline focus:ring-2 focus:ring-accent/30;
   }
+
+  /*
+  Title: 
+  Description:
+  */
+
+  .list-header-container {
+    @apply w-full gap-4;
+  }
+  .home-header {
+    @apply flex-row items-center gap-2;
+  }
+
+  .home-header-avatar {
+    @apply size-12 rounded-full object-cover overflow-hidden border-[.8px] border-border;
+  }
+
+  .home-header-title {
+    @apply text-xl text-foreground font-bold capitalize;
+  }
+
+  .home-empty-state {
+    @apply text-center text-sm text-foreground;
+  }
+
+  .home-search-box {
+    @apply w-full h-fit border border-border p-2 flex-row items-center rounded-xl;
+  }
+
+  .home-search-inputfield {
+    @apply grow flex-row items-center gap-2;
+  }
+
+  .home-search-icon {
+    @apply size-6;
+  }
+
+  .home-search-placeholder {
+    @apply text-sm text-muted lowercase;
+  }
+
+  .home-search-pill {
+    @apply size-8 p-2 items-center justify-center rounded-md bg-accent;
+  }
+
+  /*
+  Title: Featured Card
+  Description:
+  */
+  .feature-container {
+    @apply w-72 rounded-2xl overflow-hidden bg-background mr-4 relative;
+  }
+
+  .feature-container-image {
+    @apply w-full h-44;
+  }
+
+  .feature-card {
+    @apply p-2;
+  }
+
+  .feature-card-title {
+    @apply text-xl text-foreground capitalize;
+  }
+
+  .feature-card-row {
+    @apply flex-row items-center justify-between pt-3;
+  }
+
+  .feature-price {
+    @apply text-lg text-accent font-bold;
+  }
+
+  .feature-card-meta {
+    @apply flex-row items-center gap-3; 
+  }
+
+  .feature-card-info {
+    @apply flex-row items-center gap-1.5;
+  }
+
+  .info-icon {
+    @apply size-4;
+  }
+
+  .info-text {
+    @apply text-sm text-muted-foreground;
+  }
+
+  .barged{
+    @apply px-2 py-1 text-xs absolute capitalize top-3 left-3 border border-foreground text-foreground bg-background/80 rounded-full
+  }
+
+  .barged-sold{
+    @apply px-2 py-1 text-xs absolute capitalize top-3 right-3 border border-destructive text-background bg-destructive/80 rounded-full mb-6
+  } 
+
+  .property-card{
+    @apply flex-row items-center gap-4 relative overflow-hidden rounded-2xl;
+  }
+  .property-card-image{
+    @apply w-34 h-34 ;
+  }
+  .property-title{
+    @apply text-xl text-foreground;
+  }
+
 }

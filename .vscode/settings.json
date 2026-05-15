@@ -8,6 +8,7 @@
     "ellipsize",
     "nativewind",
     "Pressable",
+    "supabase",
     "wordmark"
   ]
 }
