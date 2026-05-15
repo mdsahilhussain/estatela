@@ -1,21 +1,21 @@
-import { tabs } from '@/constants/data'
-import { colors, components } from '@/constants/theme'
-import { useUserSync } from '@/hooks/useUserSync'
-import { useAuth } from '@clerk/expo'
-import { Redirect, Tabs } from 'expo-router'
-import React from 'react'
-import { Image, Text, View } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { tabs } from '@/constants/data';
+import { colors, components } from '@/constants/theme';
+import { useUserStore } from '@/store/userStore';
+import { useAuth } from '@clerk/expo';
+import { clsx } from 'clsx';
+import { Redirect, Tabs } from 'expo-router';
+import React from 'react';
+import { Image, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 
 const tabBar = components.tabBar
 
-function TabIcon({ focused, icon, title }: TabIconProps) {
+function TabIcon({ focused, icon }: TabIconProps) {
     return (
         <View className='tabs-icon'>
-            <View className='tabs-pill'>
+            <View className={clsx('tabs-pill', focused && 'tabs-active')}>
                 <Image source={icon} className='tabs-glyph' />
-                {focused && (<Text className="tabs-title">{title}</Text>)}
             </View>
         </View>
     )
@@ -25,8 +25,7 @@ export default function TabLayout() {
     const { isSignedIn, isLoaded } = useAuth();
     const insets = useSafeAreaInsets();
 
-    // sync Clerk user -> supabase
-    useUserSync()
+    const isAdmin = useUserStore((state) => state?.isAdmin ?? false)
 
     if (!isLoaded) return null;
     if (!isSignedIn) {
@@ -56,20 +55,21 @@ export default function TabLayout() {
                 alignItems: 'center'
             }
         }}>
-            {
-                tabs.map((tab, index) => (
-                    <Tabs.Screen
-                        key={index}
-                        name={tab.name}
-                        options={{
-                            title: tab.title,
-                            tabBarIcon: ({ focused }) => (
-                                <TabIcon focused={focused} icon={tab.icon} title={tab.title} />
-                            )
-                        }}
-                    />
-                ))
-            }
+            {tabs.map(tab => (
+                <Tabs.Screen
+                    key={tab.name}
+                    name={tab.name}
+                    options={{
+                        title: tab.title,
+                        href: tab.name === 'create'
+                            ? (isAdmin ? undefined : null)
+                            : undefined,
+                        tabBarIcon: ({ focused }) => (
+                            <TabIcon focused={focused} icon={tab.icon} />
+                        ),
+                    }}
+                />
+            ))}
         </Tabs>
     )
 }
