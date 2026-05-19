@@ -263,7 +263,7 @@
   }
 
   .feature-card-meta {
-    @apply flex-row items-center gap-3; 
+    @apply flex-row items-center gap-3;
   }
 
   .feature-card-info {
@@ -278,22 +278,81 @@
     @apply text-sm text-muted-foreground;
   }
 
-  .barged{
-    @apply px-2 py-1 text-xs absolute capitalize top-3 left-3 border border-foreground text-foreground bg-background/80 rounded-full
+  .barged {
+    @apply px-2 py-1 text-xs absolute capitalize top-3 left-3 border border-foreground text-foreground bg-background/80 rounded-full;
   }
 
-  .barged-sold{
-    @apply px-2 py-1 text-xs absolute capitalize top-3 right-3 border border-destructive text-background bg-destructive/80 rounded-full mb-6
-  } 
+  .barged-sold {
+    @apply px-2 py-1 text-xs absolute capitalize top-3 right-3 border border-destructive text-background bg-destructive/80 rounded-full mb-6;
+  }
 
-  .property-card{
-    @apply flex-row items-center gap-4 relative overflow-hidden rounded-2xl;
+  .property-card {
+    @apply flex-row items-center gap-4 relative overflow-hidden rounded-2xl mb-4;
   }
-  .property-card-image{
-    @apply w-34 h-34 ;
+  .property-card-image {
+    @apply w-34 h-34;
   }
-  .property-title{
+  .property-title {
     @apply text-xl text-foreground;
   }
 
+  .filter-title {
+    @apply text-xl text-foreground mb-4;
+  }
+
+  .filter-searchbar {
+    @apply flex-row items-center gap-2;
+  }
+
+  .filter-search-inputfield {
+    @apply flex-1 flex-row items-center gap-2 bg-white rounded-2xl px-4 py-1 border-border/20 border-[.8px];
+  }
+
+  .filter-search-placeholder {
+    @apply flex-1;
+  }
+
+  .filter-search-pill {
+    @apply size-[52px] p-3 bg-accent shadow rounded-2xl;
+  }
+
+  .filter-notification-barged {
+    @apply absolute -top-2 -right-2 w-6 h-6 bg-destructive rounded-full items-center justify-center;
+  }
+
+  .filter-notification-barged-text {
+    @apply text-background text-[9px] font-bold;
+  }
+
+  .filter-model-container {
+    @apply flex-1 bg-background;
+  }
+
+  .filter-model-header-container {
+    @apply flex-row items-center justify-between px-5 pt-6 pb-4 bg-background border-b border-border/20;
+  }
+
+  .filter-model-header-title {
+    @apply text-lg font-bold text-foreground;
+  }
+
+  .filter-model-header-button {
+    @apply text-accent font-semibold text-sm;
+  }
+
+  .filter-model-item-title {
+    @apply text-base font-bold text-foreground mb-3;
+  }
+
+  .filter-model-item {
+    @apply flex-row flex-wrap gap-2 mb-6;
+  }
+
+  .filter-model-item-price-title {
+    @apply text-xs text-foreground mb-1.5 font-medium;
+  }
+
+  .filter-model-item-price {
+    @apply flex-row items-center bg-background rounded-2xl px-3 border border-border;
+  }
 }

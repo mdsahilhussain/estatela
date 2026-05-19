@@ -59,12 +59,10 @@ export default function App() {
     }, [])
   );
 
-  function onUnsave(){
-
-  }
+  function onUnsave() {}
 
   return (
-    <SafeAreaView className="auth-safe-area">
+    <SafeAreaView className="auth-safe-area" accessibilityLabel="Home Screen">
       <FlatList
         data={recommended}
         keyExtractor={(item) => item.id}
@@ -90,10 +88,9 @@ export default function App() {
               </View>
             </Pressable>
 
-             {/* Featured Section -------- */}
-
-             <View className="mb-6">
-              <Text className="text-foreground text-lg font-bold mb-4">
+            {/* Featured Section -------- */}
+            <View className="mb-2">
+              <Text className="text-foreground text-lg font-bold mb-4" accessibilityRole="header">
                 Featured
               </Text>
 
@@ -113,14 +110,16 @@ export default function App() {
                 />
               )}
             </View>
-
+            <Text className="text-foreground text-lg font-bold mb-4" accessibilityRole="header">
+              Recommended
+            </Text>
           </View>
         }
         renderItem={({ item }) => (
-        <PropertyCard property={item} onUnsave={onUnsave} showSave={false} />
+          <PropertyCard property={item} onUnsave={onUnsave} showSave={false} />
         )}
         ListEmptyComponent={
-          <Text className="home-empty-state">No properties found.</Text>
+          !loading ? <Text className="home-empty-state">No properties found.</Text> : null
         }
       />
     </SafeAreaView>
