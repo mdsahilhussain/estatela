@@ -1,16 +1,24 @@
-import { icons } from '@/constants/icons'
-import { formatPrice } from '@/lib/utils'
-import { Image, Text, View } from 'react-native'
+import { icons } from '@/constants/icons';
+import { useSavedProperty } from '@/hooks/useSavedProperty';
+import { formatPrice } from '@/lib/utils';
+import { useRouter } from "expo-router";
+import { Image, Pressable, Text, View } from 'react-native';
 
 export default function PropertyCard({ property,
     onUnsave,
     showSave = false, }: {
         property: Property,
-        onUnsave: () => void
-        showSave: boolean
+        onUnsave?: () => void
+        showSave?: boolean
     }) {
+    const router = useRouter()
+    const { isSaved, saveLoading, toggleSave } = useSavedProperty(
+        property.id,
+        onUnsave
+    );
+
     return (
-        <View className='property-card'>
+        <Pressable className='property-card' onPress={() => router.push(`/property/${property.id}`)}>
             <Image source={{ uri: property?.images[0] }} className='property-card-image' />
             <View className='grow'>
                 <Text className='property-title' numberOfLines={1}>{property.title}</Text>
@@ -32,6 +40,16 @@ export default function PropertyCard({ property,
                     </View>
                 </View>
             </View>
-        </View>
+
+            {showSave && (
+                <Pressable
+                    onPress={toggleSave}
+                    disabled={saveLoading}
+                    className="w-10 items-center pt-3"
+                >
+                    <Image source={isSaved ? icons.heart : icons.full_heart} className='w-full h-full' />
+                </Pressable>
+            )}
+        </Pressable>
     )
 }

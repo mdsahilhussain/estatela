@@ -355,4 +355,20 @@
   .filter-model-item-price {
     @apply flex-row items-center bg-background rounded-2xl px-3 border border-border;
   }
+
+  .filter-active-count-list {
+    @apply flex-row items-center flex-wrap gap-2 mt-2;
+  }
+
+  .filter-active-count {
+    @apply flex-row items-center gap-2 border-[.8px] border-accent bg-white rounded-full pl-3 pr-1 py-1;
+  }
+
+  .filter-active-count-icon {
+    @apply size-4
+  }
+
+  .filter-active-count-text {
+    @apply text-xs text-accent;
+  }
 }

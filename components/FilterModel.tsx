@@ -10,7 +10,6 @@ import {
     ScrollView,
     Text,
     TextInput,
-    TouchableOpacity,
     View
 } from "react-native";
 
@@ -73,7 +72,7 @@ export default function FilterModal({
         <Modal
             visible={visible}
             animationType="slide"
-            presentationStyle="pageSheet"
+            presentationStyle="formSheet"
             onRequestClose={onClose}
         >
             <View className="filter-model-container">
@@ -99,7 +98,7 @@ export default function FilterModal({
                     </Text>
                     <View className="filter-model-item">
                         {TYPES.map((item) => (
-                            <TouchableOpacity
+                            <Pressable
                                 key={String(item.value)}
                                 onPress={() => setType(item.value)}
                                 className={chip(type === item.value)}
@@ -108,7 +107,7 @@ export default function FilterModal({
                                 <Text className={chipText(type === item.value)}>
                                     {item.label}
                                 </Text>
-                            </TouchableOpacity>
+                            </Pressable>
                         ))}
                     </View>
 
@@ -118,7 +117,7 @@ export default function FilterModal({
                     </Text>
                     <View className="filter-model-item">
                         {BEDS.map((item) => (
-                            <TouchableOpacity
+                            <Pressable
                                 key={String(item.value)}
                                 onPress={() => setBedrooms(item.value)}
                                 className={clsx("flex-1 items-center py-3 rounded-2xl border", bedrooms === item.value
@@ -133,7 +132,7 @@ export default function FilterModal({
                                 >
                                     {item.label}
                                 </Text>
-                            </TouchableOpacity>
+                            </Pressable>
                         ))}
                     </View>
 
@@ -211,7 +210,7 @@ export default function FilterModal({
 
                 {/* Apply Button */}
                 <View className="px-5 pb-8 pt-4 bg-white border-t border-gray-100">
-                    <TouchableOpacity
+                    <Pressable
                         onPress={handleApply}
                         className="bg-accent rounded-2xl py-4 items-center"
                         style={{
@@ -222,10 +221,10 @@ export default function FilterModal({
                             elevation: 4,
                         }}
                     >
-                        <Text className="text-background font-bold text-base">
+                        <Text className="text-background font-bold text-base" numberOfLines={1}>
                             Apply Filters{activeCount > 0 ? ` (${activeCount})` : ""}
                         </Text>
-                    </TouchableOpacity>
+                    </Pressable>
                 </View>
             </View>
         </Modal>
