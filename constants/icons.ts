@@ -1,4 +1,5 @@
 import add from '@/assets/icons/add.png';
+import back_arrow from '@/assets/icons/back-arrow.png';
 import bed from '@/assets/icons/bed.png';
 import close_accent from '@/assets/icons/close-accent.png';
 import filter from '@/assets/icons/filter.png';
@@ -11,6 +12,7 @@ import location from '@/assets/icons/location.png';
 import logo from "@/assets/icons/logo.png";
 import search from '@/assets/icons/search.png';
 import setting from '@/assets/icons/settings.png';
+import size from '@/assets/icons/size.png';
 import water from '@/assets/icons/water.png';
 
 
@@ -28,7 +30,9 @@ location,
 bed,
 close_foreground,
 close_accent,
-full_heart
+full_heart,
+back_arrow,
+size
 } as const
 
 export type IconKey = keyof typeof icons;

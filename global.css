@@ -365,10 +365,83 @@
   }
 
   .filter-active-count-icon {
-    @apply size-4
+    @apply size-4;
   }
 
   .filter-active-count-text {
     @apply text-xs text-accent;
+  }
+
+  /* property details  */
+
+  .image-carousel-indicator {
+    @apply absolute bottom-3 right-4 bg-background/80 rounded-full px-2 py-1;
+  }
+  .image-carousel-indicator-text {
+    @apply text-xs text-foreground font-bold;
+  }
+  .image-carousel-dot-indicator {
+    @apply absolute bottom-3 left-0 right-0 flex-row justify-center gap-2;
+  }
+  .image-carousel-dot {
+    @apply w-2 h-2 rounded-full bg-background;
+  }
+  .image-carousel-dot-active {
+    @apply bg-foreground w-6;
+  }
+  .property-header-controls {
+    @apply absolute top-0 left-0 right-0;
+  }
+
+  .property-header {
+    @apply flex-row items-center justify-between px-5 pt-2;
+  }
+
+  .property-header-btn {
+    @apply size-10 items-center justify-center rounded-full bg-foreground shadow-md p-2;
+  }
+
+  .property-content {
+    @apply px-5 py-4;
+  }
+
+  .property-badges {
+    @apply flex-row items-center gap-2 mb-3;
+  }
+  .property-badge {
+    @apply px-2 py-1 rounded-full bg-background border border-border;
+  }
+  .property-badge-text {
+    @apply text-muted-foreground capitalize text-xs;
+  }
+  .property-header-info {
+    @apply flex-row items-baseline justify-between gap-3;
+  }
+  .property-title {
+    @apply text-2xl text-foreground font-bold;
+  }
+  .property-price {
+    @apply text-3xl text-accent font-bold;
+  }
+  .property-specs-row {
+    @apply flex-row items-center gap-6 mt-4;
+  }
+  .property-spec {
+    @apply flex-row items-center gap-2;
+  }
+  .property-spec-icon {
+    @apply size-4;
+  }
+  .property-description {
+    @apply mt-6;
+  }
+  .property-description-title {
+    @apply text-lg text-foreground font-bold mb-2;
+  }
+  .property-description-text {
+    @apply text-sm text-muted-foreground;
+  }
+  .property-description-toggle {
+    @apply text-sm text-accent font-semibold mt-2;
   }
 }
