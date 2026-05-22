@@ -88,7 +88,7 @@ export default function Search() {
   }, [search, type, bedrooms, minPrice, minPrice])
 
   return (
-    <SafeAreaView accessibilityLabel="Search Screen" className='auth-safe-area'>
+    <SafeAreaView accessibilityLabel="Search Screen" className='auth-safe-area pb-20'>
       <Text accessibilityRole="header" className='filter-title'>Find Property</Text>
       <View className='filter-searchbar'>
         <View className="filter-search-inputfield">
@@ -171,7 +171,7 @@ export default function Search() {
             <Text className="info-text text-center">
               Try a different search or adjust filters.
             </Text>
-          </View>) : (<ActivityIndicator size='large' className='bg-accent' />)
+          </View>) : (<ActivityIndicator size='large' color="#2563EB" />)
         }
       />
 

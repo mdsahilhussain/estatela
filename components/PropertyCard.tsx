@@ -34,7 +34,7 @@ export default function PropertyCard({ property,
                             <Text className='info-text'>{`${property.bedrooms} ${property.bathrooms < 2 ? "Bed" : "Beds"}`}</Text>
                         </View>
                         <View className='feature-card-info'>
-                            <Image className='info-icon' source={icons.water} alt='bed water' />
+                            <Image className='info-icon' source={icons.size} alt='bed water' />
                             <Text className='info-text'>{property.area_sqft} ft²</Text>
                         </View>
                     </View>
