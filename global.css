@@ -75,13 +75,18 @@
     @apply text-xs text-background;
   }
 
+  .screen-title {
+    @apply text-2xl text-foreground font-bold mb-4;
+  }
+
+  .screen-safe-area {
+    @apply flex-1 bg-background p-6 pb-20;
+  }
+
   /* 
   Title: Authentication Pages style
   Description: 
   */
-  .auth-safe-area {
-    @apply flex-1 bg-background py-6;
-  }
   .auth-screen {
     @apply flex-1;
   }
@@ -294,10 +299,6 @@
   }
   .property-title {
     @apply text-xl text-foreground;
-  }
-
-  .filter-title {
-    @apply text-xl text-foreground mb-4;
   }
 
   .filter-searchbar {

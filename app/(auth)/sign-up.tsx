@@ -100,7 +100,7 @@ export default function SignUp() {
     signUp.missingFields.length === 0
   ) {
     return (
-      <SafeAreaView className="auth-safe-area">
+      <SafeAreaView className="screen-safe-area">
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           className="auth-screen"
@@ -170,7 +170,7 @@ export default function SignUp() {
   }
 
   return (
-    <SafeAreaView className='auth-safe-area'>
+    <SafeAreaView className='screen-safe-area'>
       <KeyboardAvoidingView behavior={Platform.OS === "android" ? "height" : 'padding'}
         className='auth-screen'>
         <ScrollView className='auth-scroll' keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>

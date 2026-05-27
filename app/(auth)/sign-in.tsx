@@ -133,7 +133,7 @@ export default function SignIn() {
   // Show verification screen if email needs verification
   if (signIn.status === 'needs_client_trust' || signIn.status === 'needs_second_factor') {
     return (
-      <SafeAreaView className="auth-safe-area">
+      <SafeAreaView className="screen-safe-area">
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           className="auth-screen"
@@ -203,7 +203,7 @@ export default function SignIn() {
   }
 
   return (
-    <SafeAreaView className='auth-safe-area'>
+    <SafeAreaView className='screen-safe-area'>
       <KeyboardAvoidingView behavior={Platform.OS === "android" ? "height" : 'padding'}
         className='auth-screen'>
         <ScrollView className='auth-scroll' keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>

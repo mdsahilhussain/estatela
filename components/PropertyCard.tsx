@@ -43,11 +43,12 @@ export default function PropertyCard({ property,
 
             {showSave && (
                 <Pressable
+                    key={`save-${property.id}`}
                     onPress={toggleSave}
                     disabled={saveLoading}
-                    className="w-10 items-center pt-3"
+                    className="absolute top-2 right-2 size-8"
                 >
-                    <Image source={isSaved ? icons.heart : icons.full_heart} className='w-full h-full' />
+                    <Image source={isSaved ? icons.full_heart : icons.heart} className='w-5 h-5' resizeMode='contain'/>
                 </Pressable>
             )}
         </Pressable>

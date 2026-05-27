@@ -85,11 +85,11 @@ export default function SearchScreen() {
 
   useEffect(() => {
     searchFilter()
-  }, [search, type, bedrooms, minPrice, minPrice])
+  }, [search, type, bedrooms, minPrice, maxPrice])
 
   return (
-    <SafeAreaView accessibilityLabel="Search Screen" className='auth-safe-area pb-20'>
-      <Text accessibilityRole="header" className='filter-title'>Find Property</Text>
+    <SafeAreaView accessibilityLabel="Search Screen" className='screen-safe-area'>
+      <Text accessibilityRole="header" className='screen-title'>Find Property</Text>
       <View className='filter-searchbar'>
         <View className="filter-search-inputfield">
           <Image source={icons.input_search} alt="search icon" className="home-search-icon" />

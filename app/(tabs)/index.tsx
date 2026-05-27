@@ -62,11 +62,10 @@ export default function HomeScreen() {
   function onUnsave() {}
 
   return (
-    <SafeAreaView className="auth-safe-area" accessibilityLabel="Home Screen">
+    <SafeAreaView className="screen-safe-area" accessibilityLabel="Home Screen">
       <FlatList
         data={recommended}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={{ paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
           <View className="list-header-container">

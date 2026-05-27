@@ -24,7 +24,7 @@ export default function FavoriteScreen() {
       const { data, error } = await authSupabase
         .from('saved_properties')
         .select('id, property_id, properties(*)')
-        .eq('user_id', userId)
+        .eq('user_clerk_id', userId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -44,13 +44,13 @@ export default function FavoriteScreen() {
   )
 
   return (
-    <SafeAreaView className='auth-safe-area'>
-      <View className="px-5 pt-4 pb-3">
+    <SafeAreaView className='screen-safe-area'>
+      <View className='mb-4'>
         <Text className="text-2xl font-bold text-gray-900">Saved</Text>
         {!loading && (
           <Text className="text-sm text-gray-400 mt-1">
-            {saved.length} {saved.length === 1 ? "property" : "properties"}{" "}
-            saved
+            {saved.length} {saved.length === 1 ? "property" : "properties"} {" "}
+             saved
           </Text>
         )}
       </View>
@@ -63,8 +63,6 @@ export default function FavoriteScreen() {
         <FlatList
           data={saved}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={{ padding: 20, paddingBottom: 100 }}
-          showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
             <PropertyCard
               property={item.properties}
@@ -74,8 +72,10 @@ export default function FavoriteScreen() {
               showSave
             />
           )}
+          contentContainerStyle={{ paddingBottom: 100 }}
+          showsVerticalScrollIndicator={false}
           ListEmptyComponent={
-            <View className="flex-1 items-center justify-center py-24">
+            <View className="flex-1 items-center justify-center">
               <View className="w-20 h-20 bg-red-50 rounded-full items-center justify-center mb-4">
                 {/* <Ionicons name="heart-outline" size={36} color="#EF4444" /> */}
               </View>
