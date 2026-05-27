@@ -52,6 +52,12 @@ declare global {
     setMaxPrice: (value: number | null) => void;
     resetFilters: () => void;
   }
+
+  interface SavedProperty {
+    id: string;
+    property_id: string;
+    properties: Property;
+  }
 }
 
 export { };

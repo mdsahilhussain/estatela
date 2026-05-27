@@ -5,7 +5,7 @@ import { Pressable, Text } from 'react-native';
 import { SafeAreaView as RNSafeAreaView } from 'react-native-safe-area-context';
 const SafeAreaView = styled(RNSafeAreaView);
 
-export default function Setting() {
+export default function SettingScreen() {
   const { signOut } = useAuth();
 
   const handleLogout = async () => {

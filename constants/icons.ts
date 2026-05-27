@@ -1,6 +1,8 @@
 import add from '@/assets/icons/add.png';
 import back_arrow from '@/assets/icons/back-arrow.png';
 import bed from '@/assets/icons/bed.png';
+import bin from '@/assets/icons/bin.png';
+import check from '@/assets/icons/check.png';
 import close_accent from '@/assets/icons/close-accent.png';
 import filter from '@/assets/icons/filter.png';
 import full_heart from '@/assets/icons/full-heart.png';
@@ -14,6 +16,7 @@ import search from '@/assets/icons/search.png';
 import setting from '@/assets/icons/settings.png';
 import size from '@/assets/icons/size.png';
 import water from '@/assets/icons/water.png';
+import whatsapp from '@/assets/icons/whatsapp.png';
 
 
 export const icons = {
@@ -32,7 +35,10 @@ close_foreground,
 close_accent,
 full_heart,
 back_arrow,
-size
+size,
+whatsapp,
+bin,
+check,
 } as const
 
 export type IconKey = keyof typeof icons;

@@ -80,7 +80,7 @@
   Description: 
   */
   .auth-safe-area {
-    @apply flex-1 bg-background p-6;
+    @apply flex-1 bg-background py-6;
   }
   .auth-screen {
     @apply flex-1;
@@ -426,22 +426,39 @@
   .property-specs-row {
     @apply flex-row items-center gap-6 mt-4;
   }
-  .property-spec {
+  .property-spec,
+  .property-location-info {
     @apply flex-row items-center gap-2;
   }
-  .property-spec-icon {
+  .property-spec-icon,
+  .property-location-icon {
     @apply size-4;
   }
-  .property-description {
+  .property-description,
+  .property-location {
     @apply mt-6;
   }
-  .property-description-title {
+  .property-description-title,
+  .property-location-title {
     @apply text-lg text-foreground font-bold mb-2;
   }
-  .property-description-text {
+  .property-description-text,
+  .property-location-text {
     @apply text-sm text-muted-foreground;
   }
   .property-description-toggle {
     @apply text-sm text-accent font-semibold mt-2;
+  }
+
+  .property-cta {
+    @apply mt-2 items-center justify-center rounded-2xl bg-foreground py-4;
+  }
+
+  .property-cta-btn {
+    @apply flex-row items-center gap-2 text-base font-sans-bold text-background;
+  }
+
+  .map-screen-container {
+    @apply flex-row items-center justify-between px-4 py-3 border-b border-border/20;
   }
 }

@@ -12,7 +12,7 @@ import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
 
 const SafeAreaView = styled(RNSafeAreaView);
 
-export default function Search() {
+export default function SearchScreen() {
   const [showFilter, setShowFilter] = useState<boolean>(false)
   const [data, setData] = useState<Property[]>([])
   const [loading, setLoading] = useState<boolean>(false)
