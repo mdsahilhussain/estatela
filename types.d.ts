@@ -58,6 +58,23 @@ declare global {
     property_id: string;
     properties: Property;
   }
+
+  interface FormState {
+    title: string;
+    description: string;
+    price: string;
+    type: PropertyType;
+    bedrooms: number;
+    bathrooms: number;
+    areaSqft: string;
+    address: string;
+    city: string;
+    latitude: string;
+    longitude: string;
+    isFeatured: boolean;
+    images: string[];
+    localImages: string[];
+  }
 }
 
 export { };

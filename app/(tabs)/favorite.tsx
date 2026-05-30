@@ -44,7 +44,7 @@ export default function FavoriteScreen() {
   )
 
   return (
-    <SafeAreaView className='screen-safe-area'>
+    <SafeAreaView className='screen-safe-area' accessibilityLabel='Favorite Screen'>
       <View className='mb-4'>
         <Text className="text-2xl font-bold text-gray-900">Saved</Text>
         {!loading && (
@@ -57,7 +57,7 @@ export default function FavoriteScreen() {
 
       {loading ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#2563EB" />
+          <ActivityIndicator size="large" color="#0a0a0a" />
         </View>
       ) : (
         <FlatList
@@ -89,7 +89,7 @@ export default function FavoriteScreen() {
                 onPress={() => router.push("/(tabs)/search")}
                 className="mt-6 bg-blue-600 px-6 py-3 rounded-2xl"
               >
-                <Text className="text-white font-semibold">
+                <Text className="text-card font-semibold">
                   Browse Properties
                 </Text>
               </Pressable>

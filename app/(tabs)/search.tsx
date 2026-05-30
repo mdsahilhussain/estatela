@@ -46,6 +46,8 @@ export default function SearchScreen() {
     maxPrice !== null
   ].filter(Boolean).length;
 
+
+  // Build dynamic query based on active filters ----------
   async function searchFilter() {
     setLoading(true)
 
@@ -82,7 +84,6 @@ export default function SearchScreen() {
     }
   }
 
-
   useEffect(() => {
     searchFilter()
   }, [search, type, bedrooms, minPrice, maxPrice])
@@ -114,7 +115,7 @@ export default function SearchScreen() {
           )}
         </Pressable>
       </View>
-
+      {/* Active Filters Count  */}
       {
         activeFilterCount > 0 && (
           <View className='filter-active-count-list'>
@@ -155,6 +156,7 @@ export default function SearchScreen() {
         )
       }
 
+      {/* Properties List  */}
       <FlatList
         data={data}
         keyExtractor={(item) => item.id}
@@ -171,7 +173,7 @@ export default function SearchScreen() {
             <Text className="info-text text-center">
               Try a different search or adjust filters.
             </Text>
-          </View>) : (<ActivityIndicator size='large' color="#2563EB" />)
+          </View>) : (<ActivityIndicator size='large' color="#0a0a0a" />)
         }
       />
 

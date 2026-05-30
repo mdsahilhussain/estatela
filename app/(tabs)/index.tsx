@@ -21,6 +21,7 @@ export default function HomeScreen() {
   const [recommended, setRecommended] = useState<Property[]>([]);
   const [loading, setLoading] = useState<boolean>();
 
+  // Fetch featured and recommended properties in parallel --------
   const fetchProperties = async () => {
     setLoading(true);
     try {
@@ -96,7 +97,7 @@ export default function HomeScreen() {
               {loading ? (
                 <ActivityIndicator
                   size="small"
-                  color="#2563EB"
+                  color="#0a0a0a"
                   className="py-10"
                 />
               ) : (

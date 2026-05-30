@@ -141,7 +141,7 @@ export default function PropertyDetail() {
   if (loading) {
     return (
       <View className="flex-1 items-center justify-center">
-        <ActivityIndicator size="large" color="#2563EB" />
+        <ActivityIndicator size="large" color="#0a0a0a" />
       </View>
     );
   }

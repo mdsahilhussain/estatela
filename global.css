@@ -84,7 +84,7 @@
   }
 
   /* 
-  Title: Authentication Pages style
+  Title: Authentication Screen
   Description: 
   */
   .auth-screen {
@@ -131,12 +131,13 @@
     @apply gap-2;
   }
 
-  .auth-label {
+  .auth-label, .create-property-label {
     @apply text-sm font-sans-semibold text-muted-foreground;
   }
 
-  .auth-input {
-    @apply rounded-xl border border-border bg-background p-3 text-base font-sans-medium text-primary;
+  .auth-input,
+  .create-property-input {
+    @apply rounded-xl border border-border/40 bg-background p-3 text-base font-sans-medium text-primary;
   }
 
   .auth-input-error {
@@ -196,7 +197,7 @@
   }
 
   /*
-  Title: 
+  Title: Home Screen
   Description:
   */
 
@@ -236,11 +237,11 @@
   }
 
   .home-search-pill {
-    @apply size-8 p-2 items-center justify-center rounded-md bg-accent;
+    @apply size-8 p-2 items-center justify-center rounded-md bg-foreground;
   }
 
   /*
-  Title: Featured Card
+  Title: Featured Detail Card
   Description:
   */
   .feature-container {
@@ -306,7 +307,7 @@
   }
 
   .filter-search-inputfield {
-    @apply flex-1 flex-row items-center gap-2 bg-white rounded-2xl px-4 py-1 border-border/20 border-[.8px];
+    @apply flex-1 flex-row items-center gap-2 bg-card rounded-2xl px-4 py-1 border-border/20 border-[.8px];
   }
 
   .filter-search-placeholder {
@@ -314,7 +315,7 @@
   }
 
   .filter-search-pill {
-    @apply size-[52px] p-3 bg-accent shadow rounded-2xl;
+    @apply size-[52px] p-3 bg-foreground shadow rounded-2xl;
   }
 
   .filter-notification-barged {
@@ -338,7 +339,7 @@
   }
 
   .filter-model-header-button {
-    @apply text-accent font-semibold text-sm;
+    @apply text-foreground font-semibold text-sm;
   }
 
   .filter-model-item-title {
@@ -354,7 +355,7 @@
   }
 
   .filter-model-item-price {
-    @apply flex-row items-center bg-background rounded-2xl px-3 border border-border;
+    @apply flex-row items-center bg-background rounded-2xl px-3 border border-border/40;
   }
 
   .filter-active-count-list {
@@ -362,7 +363,7 @@
   }
 
   .filter-active-count {
-    @apply flex-row items-center gap-2 border-[.8px] border-accent bg-white rounded-full pl-3 pr-1 py-1;
+    @apply flex-row items-center gap-2 border-[.8px] border-accent bg-card rounded-full pl-3 pr-1 py-1;
   }
 
   .filter-active-count-icon {
@@ -373,8 +374,10 @@
     @apply text-xs text-accent;
   }
 
-  /* property details  */
-
+  /* 
+  Title: Property Detail Card
+  Description:  
+  */
   .image-carousel-indicator {
     @apply absolute bottom-3 right-4 bg-background/80 rounded-full px-2 py-1;
   }
@@ -462,4 +465,42 @@
   .map-screen-container {
     @apply flex-row items-center justify-between px-4 py-3 border-b border-border/20;
   }
+
+  /*
+  Title: Create Screen
+  Description:
+   */
+
+  .create-property-section {
+    @apply mb-5;
+  }
+  
+  .create-property-section-title{
+    @apply text-sm text-foreground font-bold mb-1.5;
+  }
+
+  .create-property-image-cover {
+    @apply absolute top-1 left-1 bg-accent px-1.5 py-0.5 rounded-full;
+  }
+
+  .create-property-image-remove {
+    @apply absolute top-1 right-1 bg-destructive p-0.5 rounded-full items-center justify-center;
+  }
+
+  .create-property-image-add {
+    @apply size-24 rounded-2xl bg-background border border-dashed border-border/40 items-center justify-center;
+  }
+
+  .create-property-type-option {
+    @apply px-4 py-2 rounded-full border bg-card border-border/40 items-center justify-center;
+  }
+
+  .create-property-type-option-text{
+    @apply text-sm font-semibold capitalize;
+  }
+
+  .create-property-coordinates{
+    @apply flex-row items-center gap-1 bg-foreground px-3 py-1.5 rounded-full;
+  }
 }
+ 

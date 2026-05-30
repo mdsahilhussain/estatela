@@ -9,8 +9,8 @@ import {
   Alert,
   Image,
   Linking,
+  Pressable,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 
@@ -82,13 +82,13 @@ export default function SettingScreen() {
   if (!isLoaded || !user) {
     return (
       <SafeAreaView className="flex-1 bg-background items-center justify-center">
-        <ActivityIndicator size="large" color="#3B82F6" />
+        <ActivityIndicator size="large" color="#0a0a0a" />
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView className="screen-safe-area">
+    <SafeAreaView className="screen-safe-area" accessibilityLabel='Setting Screen'>
       {/* Avatar + Name */}
       <View className="items-center py-8">
         <View className="relative">
@@ -96,7 +96,7 @@ export default function SettingScreen() {
             source={{ uri: user.imageUrl }}
             className="w-24 h-24 rounded-full mb-4"
           />
-          <TouchableOpacity
+          <Pressable
             onPress={handleUpdateProfileImage}
             disabled={isUpdating}
             className="absolute bottom-3 right-0 bg-accent rounded-full p-2"
@@ -106,7 +106,7 @@ export default function SettingScreen() {
             ) : (
               <Ionicons name="camera" size={16} color="white" />
             )}
-          </TouchableOpacity>
+          </Pressable>
         </View>
         <Text className="text-xl font-bold text-foreground">
           {user.firstName} {user.lastName}
@@ -148,13 +148,13 @@ export default function SettingScreen() {
 
       {/* Sign Out */}
       <View className="mt-auto">
-        <TouchableOpacity
+        <Pressable
           onPress={handleSignOut}
           className="flex-row items-center justify-center gap-2 bg-destructive/10 py-4 rounded-2xl border border-destructive/30"
         >
           <Ionicons name="log-out-outline" size={20} className="text-destructive" />
           <Text className="text-destructive font-semibold text-base">Sign Out</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </SafeAreaView>
   );
@@ -170,15 +170,15 @@ function MenuItem({
   onPress?: () => void;
 }) {
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={onPress}
-      className="flex-row items-center gap-4 bg-white px-4 py-4 rounded-2xl"
+      className="flex-row items-center gap-4 bg-card px-4 py-4 rounded-2xl"
     >
       <Ionicons name={icon} size={22} className="text-muted" />
       <Text className="flex-1 text-foreground font-medium text-base">
         {label}
       </Text>
       <Ionicons name="chevron-forward" size={18} className="text-muted-foreground" />
-    </TouchableOpacity>
+    </Pressable>
   );
 }

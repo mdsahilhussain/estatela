@@ -1,5 +1,9 @@
 import { icons } from "./icons";
 
+export const MIN_PRICE = 1;
+export const MAX_PRICE = 999_999_999;
+export const TYPES_LIST = ["apartment", "house", "villa", "studio"] as const; 
+
 export const tabs: AppTab[] = [
   { name: "index", title: "Home", icon: icons.home },
   { name: "search", title: "Search", icon: icons.search },
