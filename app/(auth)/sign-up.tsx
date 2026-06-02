@@ -1,4 +1,5 @@
 import { icons } from '@/constants/icons';
+import { captureError, sentryBreadcrumbs } from '@/src/lib/sentry';
 import { useAuth, useSignUp } from '@clerk/expo';
 import { type Href, Link, router } from 'expo-router';
 import { styled } from 'nativewind';
@@ -35,57 +36,68 @@ export default function SignUp() {
   const handleSubmit = async () => {
     if (!formValid) return;
 
-    const { error } = await signUp.password({
-      firstName,
-      lastName,
-      emailAddress,
-      password
-    })
+    try {
+      const { error } = await signUp.password({
+        firstName,
+        lastName,
+        emailAddress,
+        password
+      })
 
-    if (error) {
-      alert(error.message)
-      return
-    }
+      if (error) {
+        alert(error.message)
+        return
+      }
 
-    if (!error) {
-      await signUp.verifications.sendEmailCode();
+      if (!error) {
+        await signUp.verifications.sendEmailCode();
+      }
+    } catch (error) {
+      captureError(error, 'clerk_sign_up', { method: 'password' });
+      alert('Failed to create account. Please try again.');
     }
   }
 
   const handleVerify = async () => {
-    const { error } = await signUp.verifications.verifyEmailCode({
-      code,
-    });
-
-    if (error) {
-      alert(error.message)
-      return
-    }
-
-    if (signUp.status === 'complete') {
-      await signUp.finalize({
-        navigate: ({ session, decorateUrl }) => {
-          if (session?.currentTask) {
-            console.log(session?.currentTask);
-            return;
-          }
-
-          const url = decorateUrl('/(tabs)');
-          if (url.startsWith('http')) {
-            // Only use window.location on web platform
-            if (typeof window !== 'undefined' && window.location) {
-              window.location.href = url;
-            } else {
-              // On native, just use router navigation
-              router.replace('/(tabs)' as Href);
-            }
-          } else {
-            router.replace(url as Href);
-          }
-        },
+    try {
+      const { error } = await signUp.verifications.verifyEmailCode({
+        code,
       });
-    } else {
-      console.error('Sign-up attempt not complete:', signUp);
+
+      if (error) {
+        alert(error.message)
+        return
+      }
+
+      if (signUp.status === 'complete') {
+        sentryBreadcrumbs.login('sign_up_email_code');
+        await signUp.finalize({
+          navigate: ({ session, decorateUrl }) => {
+            if (session?.currentTask) {
+              console.log(session?.currentTask);
+              return;
+            }
+
+            const url = decorateUrl('/(tabs)');
+            if (url.startsWith('http')) {
+              // Only use window.location on web platform
+              if (typeof window !== 'undefined' && window.location) {
+                window.location.href = url;
+              } else {
+                // On native, just use router navigation
+                router.replace('/(tabs)' as Href);
+              }
+            } else {
+              router.replace(url as Href);
+            }
+          },
+        });
+      } else {
+        console.error('Sign-up attempt not complete:', signUp);
+      }
+    } catch (error) {
+      captureError(error, 'clerk_sign_up_verify', { method: 'email_code' });
+      alert('Failed to verify code. Please try again.');
     }
   };
   // Don't show anything if already signed in or sign-up is complete

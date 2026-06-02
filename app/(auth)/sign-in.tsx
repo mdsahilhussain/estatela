@@ -1,4 +1,5 @@
 import { icons } from '@/constants/icons';
+import { captureError, sentryBreadcrumbs } from '@/src/lib/sentry';
 import { useAuth, useSignIn } from '@clerk/expo';
 import { type Href, Link, router } from 'expo-router';
 import { styled } from 'nativewind';
@@ -41,6 +42,7 @@ export default function SignIn() {
       }
       console.log(signIn.status, "11111")
       if (signIn.status === 'complete') {
+        sentryBreadcrumbs.login('password');
         await signIn.finalize({
           navigate: ({ session, decorateUrl }) => {
             if (session?.currentTask) {
@@ -78,39 +80,46 @@ export default function SignIn() {
       }
     } catch (err) {
       console.error('Sign-in error:', err);
+      captureError(err, 'clerk_sign_in', { method: 'password' });
       alert('An unexpected error occurred. Please try again.');
     }
   }
 
   const handleVerify = async () => {
-    await signIn.mfa.verifyEmailCode({
-      code,
-    });
-
-    if (signIn.status === 'complete') {
-      await signIn.finalize({
-        navigate: ({ session, decorateUrl }) => {
-          if (session?.currentTask) {
-            console.log(session?.currentTask);
-            return;
-          }
-
-          const url = decorateUrl('/(tabs)');
-          if (url.startsWith('http')) {
-            // Only use window.location on web platform
-            if (typeof window !== 'undefined' && window.location) {
-              window.location.href = url;
-            } else {
-              // On native, just use router navigation
-              router.replace('/(tabs)' as Href);
-            }
-          } else {
-            router.replace(url as Href);
-          }
-        },
+    try {
+      await signIn.mfa.verifyEmailCode({
+        code,
       });
-    } else {
-      console.error('Sign-in attempt not complete:', signIn);
+
+      if (signIn.status === 'complete') {
+        sentryBreadcrumbs.login('mfa_email_code');
+        await signIn.finalize({
+          navigate: ({ session, decorateUrl }) => {
+            if (session?.currentTask) {
+              console.log(session?.currentTask);
+              return;
+            }
+
+            const url = decorateUrl('/(tabs)');
+            if (url.startsWith('http')) {
+              // Only use window.location on web platform
+              if (typeof window !== 'undefined' && window.location) {
+                window.location.href = url;
+              } else {
+                // On native, just use router navigation
+                router.replace('/(tabs)' as Href);
+              }
+            } else {
+              router.replace(url as Href);
+            }
+          },
+        });
+      } else {
+        console.error('Sign-in attempt not complete:', signIn);
+      }
+    } catch (error) {
+      captureError(error, 'clerk_sign_in_mfa', { method: 'mfa_email_code' });
+      alert('Failed to verify code. Please try again.');
     }
   };
 
@@ -121,6 +130,7 @@ export default function SignIn() {
       alert('Verification code sent!');
     } catch (error) {
       console.log(error)
+      captureError(error, 'clerk_resend_mfa_code');
       alert('Failed to resend code. Please try again.');
     }
   };

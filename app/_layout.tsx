@@ -1,11 +1,15 @@
 import "@/global.css";
 import { useUserSync } from "@/hooks/useUserSync";
+import { AppErrorBoundary } from "@/src/components/AppErrorBoundary";
+import { initSentry, wrapWithSentry } from "@/src/lib/sentry";
 import { ClerkProvider, useAuth } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
 import { useFonts } from 'expo-font';
 
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
+
+initSentry();
 
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 
@@ -36,13 +40,33 @@ const RootLayoutContent = () => {
 
   if (!fontLoaded || !authLoaded) return null
 
-  return <Stack screenOptions={{
-    headerShown: false,
-  }} />;
+  return (
+    <>
+      <Stack screenOptions={{
+        headerShown: false,
+      }} />
+      {/* Don't remove this line  ------
+      {__DEV__ && (
+        <View className="absolute bottom-24 right-4 z-50">
+          <Pressable
+            accessibilityRole="button"
+            onPress={testSentryCrash}
+            className="rounded-2xl bg-destructive px-4 py-3"
+          >
+            <Text className="font-semibold text-background">Test Sentry Crash</Text>
+          </Pressable>
+        </View>
+      )} */}
+    </>
+  );
 }
 
-export default function RootLayout() {
+function RootLayout() {
   return <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
-    <RootLayoutContent />
+    <AppErrorBoundary>
+      <RootLayoutContent />
+    </AppErrorBoundary>
   </ClerkProvider>;
 }
+
+export default wrapWithSentry(RootLayout);

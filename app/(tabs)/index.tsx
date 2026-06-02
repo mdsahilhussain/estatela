@@ -4,6 +4,7 @@ import { icons } from "@/constants/icons";
 import { images } from "@/constants/images";
 import "@/global.css";
 import { supabase } from "@/lib/supabase";
+import { captureError } from "@/src/lib/sentry";
 import { useUser } from "@clerk/expo";
 import { useFocusEffect, useRouter } from "expo-router";
 import { styled } from "nativewind";
@@ -49,6 +50,7 @@ export default function HomeScreen() {
       setRecommended(recommendedData ?? []);
     } catch (error) {
       console.log("Error fetching properties:", error);
+      captureError(error, "fetch_home_properties");
     } finally {
       setLoading(false);
     }

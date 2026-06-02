@@ -14,6 +14,7 @@ import {
   View,
 } from "react-native";
 
+import { captureError, clearSentryUser, sentryBreadcrumbs } from "@/src/lib/sentry";
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
 
 const SafeAreaView = styled(RNSafeAreaView);
@@ -26,10 +27,13 @@ export default function SettingScreen() {
 
   const handleSignOut = async () => {
     try {
+      sentryBreadcrumbs.logout();
       await signOut();
+      clearSentryUser();
       router.replace("/sign-in");
     } catch (error) {
       console.error("Error signing out:", error);
+      captureError(error, "clerk_sign_out");
     }
   };
 
@@ -70,6 +74,7 @@ export default function SettingScreen() {
       Alert.alert("Success", "Profile picture updated successfully!");
     } catch (error) {
       console.error("Error updating profile image:", error);
+      captureError(error, "clerk_update_profile_image");
       Alert.alert(
         "Error",
         "Failed to update profile picture. Please try again."

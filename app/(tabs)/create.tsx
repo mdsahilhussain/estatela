@@ -1,6 +1,7 @@
 import { MAX_PRICE, MIN_PRICE, TYPES_LIST } from '@/constants/data';
 import { icons } from '@/constants/icons';
 import { useSupabase } from '@/hooks/useSupabase';
+import { captureError, sentryBreadcrumbs } from '@/src/lib/sentry';
 import clsx from 'clsx';
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
@@ -105,6 +106,7 @@ export default function CreateScreen() {
         previewUris.push(asset.uri);
       } catch (err) {
         console.error("Upload error:", err);
+        captureError(err, "upload_property_image");
         Alert.alert("Upload Failed", "One or more images failed to upload.");
       }
     }
@@ -136,6 +138,7 @@ export default function CreateScreen() {
       });
     } catch (error) {
       console.error("Location error:", error);
+      captureError(error, "detect_property_location");
       Alert.alert("Error", "Failed to detect location. Please try again.");
     } finally {
       setDetectingLocation(false);
@@ -166,38 +169,59 @@ export default function CreateScreen() {
       return Alert.alert("Validation Error", "At least one photo is required.");
 
     setSubmitting(true);
-
-    const { error } = await authSupabase.from("properties").insert({
-      title: form.title.trim(),
-      description: form.description.trim(),
-      price: priceValue,
+    sentryBreadcrumbs.propertyCreation("start", {
       type: form.type,
-      bedrooms: form.bedrooms,
-      bathrooms: form.bathrooms,
-      area_sqft: form.areaSqft ? Number(form.areaSqft) : null,
-      address: form.address.trim(),
       city: form.city.trim(),
-      latitude: form.latitude ? Number(form.latitude) : null,
-      longitude: form.longitude ? Number(form.longitude) : null,
-      is_featured: form.isFeatured,
-      images: form.images,
+      imageCount: form.images.length,
     });
 
-    setSubmitting(false);
+    try {
+      const { error } = await authSupabase.from("properties").insert({
+        title: form.title.trim(),
+        description: form.description.trim(),
+        price: priceValue,
+        type: form.type,
+        bedrooms: form.bedrooms,
+        bathrooms: form.bathrooms,
+        area_sqft: form.areaSqft ? Number(form.areaSqft) : null,
+        address: form.address.trim(),
+        city: form.city.trim(),
+        latitude: form.latitude ? Number(form.latitude) : null,
+        longitude: form.longitude ? Number(form.longitude) : null,
+        is_featured: form.isFeatured,
+        images: form.images,
+      });
 
-    if (error) {
+      if (error) {
+        sentryBreadcrumbs.propertyCreation("failure", { city: form.city.trim() });
+        captureError(error, "create_property", {
+          type: form.type,
+          city: form.city.trim(),
+        });
+        Alert.alert("Submission Failed", "Failed to create property. Please try again.");
+        console.error("Submission error:", error);
+        return;
+      }
+
+      sentryBreadcrumbs.propertyCreation("success", { city: form.city.trim() });
+      setForm(INITIAL_FORM);
+      Alert.alert("Success", "Property created successfully!", [
+        {
+          text: "OK",
+          onPress: () => router.replace("/(tabs)"),
+        },
+      ]);
+    } catch (error) {
+      sentryBreadcrumbs.propertyCreation("failure", { city: form.city.trim() });
+      captureError(error, "create_property_unhandled", {
+        type: form.type,
+        city: form.city.trim(),
+      });
       Alert.alert("Submission Failed", "Failed to create property. Please try again.");
       console.error("Submission error:", error);
-      return;
+    } finally {
+      setSubmitting(false);
     }
-
-    setForm(INITIAL_FORM);
-    Alert.alert("Success", "Property created successfully!", [
-      {
-        text: "OK",
-        onPress: () => router.replace("/(tabs)"),
-      },
-    ]);
   }
 
   // helper ui components 

@@ -3,8 +3,8 @@ import { useSavedProperty } from "@/hooks/useSavedProperty";
 import { useSupabase } from "@/hooks/useSupabase";
 import { supabase } from "@/lib/supabase";
 import { formatPrice } from "@/lib/utils";
+import { captureError, sentryBreadcrumbs } from "@/src/lib/sentry";
 import { useUserStore } from "@/store/userStore";
-import { useAuth } from "@clerk/expo";
 import clsx from "clsx";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { styled } from "nativewind";
@@ -21,7 +21,7 @@ import {
   Pressable,
   ScrollView,
   Text,
-  View,
+  View
 } from "react-native";
 import ImageViewing from "react-native-image-viewing";
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
@@ -32,9 +32,8 @@ const SafeAreaView = styled(RNSafeAreaView);
 
 export default function PropertyDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { userId } = useAuth();
   const router = useRouter();
-  const isAdmin = useUserStore();
+  const isAdmin = useUserStore((state) => state?.isAdmin ?? false)
   const ADMIN_NUMBER = "916200083799";
   const { isSaved, saveLoading, toggleSave } = useSavedProperty(id ?? "");
 
@@ -60,6 +59,7 @@ export default function PropertyDetail() {
       setLoading(false);
     } catch (error) {
       console.log("Error fetching property:", error);
+      captureError(error, "fetch_property_detail", { propertyId: id });
     } finally {
       setLoading(false);
     }
@@ -68,6 +68,12 @@ export default function PropertyDetail() {
   useEffect(() => {
     fetchProperty();
   }, [id]);
+
+  useEffect(() => {
+    if (property?.id) {
+      sentryBreadcrumbs.propertyView(property.id);
+    }
+  }, [property?.id]);
 
   function onScroll(event: NativeSyntheticEvent<NativeScrollEvent>) {
     const index = Math.round(event.nativeEvent.contentOffset.x / width);
@@ -86,9 +92,13 @@ export default function PropertyDetail() {
 
 
   const handleContactAgent = () => {
+    sentryBreadcrumbs.contactSubmission(property?.id);
     const message = `Hello, I'm interested in the property "${property?.title}". Is it still available?`;
     const url = `https://wa.me/${ADMIN_NUMBER}?text=${encodeURIComponent(message)}`;
-    Linking.openURL(url);
+    Linking.openURL(url).catch((error) => {
+      captureError(error, "open_contact_agent", { propertyId: property?.id });
+      Alert.alert("Error", "Failed to open WhatsApp. Please try again.");
+    });
   }
 
   const handleMarkSold = () => {
@@ -107,6 +117,7 @@ export default function PropertyDetail() {
           console.log("property error:", error);
           console.log("property id:", id);
           if (error) {
+            captureError(error, "mark_property_sold", { propertyId: id });
             Alert.alert("Error", "Failed to mark property as sold. Please try again.");
           } else {
             Alert.alert("Success", "Property marked as sold.");
@@ -128,6 +139,7 @@ export default function PropertyDetail() {
             .eq("id", id);
 
           if (error) {
+            captureError(error, "delete_property", { propertyId: id });
             Alert.alert("Error", "Failed to delete property. Please try again.");
           } else {
             Alert.alert("Success", "Property deleted.");
@@ -167,7 +179,6 @@ export default function PropertyDetail() {
                   <Image
                     source={{ uri: item }}
                     style={{ width, height: 400 }}
-                    resizeMode="cover"
                   />
                 </Pressable>
               )}
@@ -212,6 +223,8 @@ export default function PropertyDetail() {
                   source={icons.back_arrow}
                   alt="back icon"
                   className="w-full h-full"
+
+
                 />
               </Pressable>
               <Pressable
@@ -223,6 +236,8 @@ export default function PropertyDetail() {
                   source={isSaved ? icons.full_heart : icons.heart}
                   alt="back icon"
                   className="w-full h-full"
+
+
                 />
               </Pressable>
             </View>
@@ -358,6 +373,8 @@ export default function PropertyDetail() {
                   source={icons.size}
                   alt="location icon"
                   className="property-location-icon"
+
+
                 />
                 <Text className="text-foreground text-sm font-semibold">
                   Tap to expand
@@ -372,6 +389,8 @@ export default function PropertyDetail() {
                 source={icons.whatsapp}
                 alt="location icon"
                 className="size-6"
+
+
               />
               <Text className="text-background text-md font-semibold capitalize">
                 Connect with agent
@@ -388,6 +407,8 @@ export default function PropertyDetail() {
                     source={icons.check}
                     alt="location icon"
                     className="size-6"
+
+
                   />
                   <Text className="text-amber-500 text-md font-semibold capitalize">
                     Mark Sold
@@ -401,6 +422,8 @@ export default function PropertyDetail() {
                     source={icons.bin}
                     alt="location icon"
                     className="size-6"
+
+
                   />
                   <Text className="text-background text-md font-semibold capitalize">
                     Delete

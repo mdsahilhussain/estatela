@@ -8,6 +8,5 @@ export const useSupabase = () => {
     () => createClerkSupabaseClient(() => getToken()),
     [getToken]
   );
-
   return client;
 };

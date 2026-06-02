@@ -1,5 +1,6 @@
 import PropertyCard from '@/components/PropertyCard';
 import { useSupabase } from '@/hooks/useSupabase';
+import { captureError } from '@/src/lib/sentry';
 import { useAuth } from '@clerk/expo';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { styled } from 'nativewind';
@@ -32,6 +33,7 @@ export default function FavoriteScreen() {
       setSaved((data as unknown as SavedProperty[]) ?? []);
     } catch (error) {
       console.log("Error fetching saved properties:", error);
+      captureError(error, "fetch_saved_properties");
     } finally {
       setLoading(false);
     }

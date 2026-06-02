@@ -3,6 +3,7 @@ import PropertyCard from '@/components/PropertyCard';
 import { icons } from '@/constants/icons';
 import { supabase } from '@/lib/supabase';
 import { formatPrice } from '@/lib/utils';
+import { captureError, sentryBreadcrumbs } from '@/src/lib/sentry';
 import { useFilterStore } from '@/store/filterStore';
 import { useLocalSearchParams } from 'expo-router';
 import { styled } from 'nativewind';
@@ -50,6 +51,13 @@ export default function SearchScreen() {
   // Build dynamic query based on active filters ----------
   async function searchFilter() {
     setLoading(true)
+    sentryBreadcrumbs.search({
+      search,
+      type,
+      bedrooms,
+      minPrice,
+      maxPrice,
+    });
 
     try {
       let query = supabase.from('properties').select('*');
@@ -79,6 +87,13 @@ export default function SearchScreen() {
       setData(data ?? [])
     } catch (error) {
       console.log('Error message', error)
+      captureError(error, 'search_properties', {
+        search,
+        type,
+        bedrooms,
+        minPrice,
+        maxPrice,
+      });
     } finally {
       setLoading(false)
     }
