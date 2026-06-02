@@ -40,13 +40,12 @@ export default function SignIn() {
         alert(error.message)
         return
       }
-      console.log(signIn.status, "11111")
       if (signIn.status === 'complete') {
         sentryBreadcrumbs.login('password');
         await signIn.finalize({
           navigate: ({ session, decorateUrl }) => {
             if (session?.currentTask) {
-              console.log(session.currentTask)
+              console.info(session.currentTask)
               return
             }
 
@@ -67,7 +66,7 @@ export default function SignIn() {
         // Handle MFA if needed (not implemented in this basic flow)
         // await signIn.mfa.sendPhoneCode();
         await signIn.mfa.sendEmailCode();
-        console.log('MFA required');
+        console.info('MFA required');
       } else if (signIn.status === 'needs_client_trust') {
         const emailCodeFactor = signIn.supportedSecondFactors.find(
           (factor) => factor.strategy === 'email_code'
@@ -78,9 +77,13 @@ export default function SignIn() {
       } else {
         console.error('Sign-in attempt not complete:', signIn)
       }
-    } catch (err) {
-      console.error('Sign-in error:', err);
-      captureError(err, 'clerk_sign_in', { method: 'password' });
+    } catch (error: unknown) {
+      console.error('Sign-in error:', error);
+      if (error instanceof Error) {
+        captureError({
+          message: error.message,
+        }, 'clerk_sign_in', { method: 'password' });
+      }
       alert('An unexpected error occurred. Please try again.');
     }
   }
@@ -96,7 +99,7 @@ export default function SignIn() {
         await signIn.finalize({
           navigate: ({ session, decorateUrl }) => {
             if (session?.currentTask) {
-              console.log(session?.currentTask);
+              console.info(session?.currentTask);
               return;
             }
 
@@ -117,8 +120,12 @@ export default function SignIn() {
       } else {
         console.error('Sign-in attempt not complete:', signIn);
       }
-    } catch (error) {
-      captureError(error, 'clerk_sign_in_mfa', { method: 'mfa_email_code' });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        captureError({
+          message: error.message,
+        }, 'clerk_sign_in_mfa', { method: 'mfa_email_code' });
+      }
       alert('Failed to verify code. Please try again.');
     }
   };
@@ -129,7 +136,7 @@ export default function SignIn() {
       await signIn.mfa.sendEmailCode();
       alert('Verification code sent!');
     } catch (error) {
-      console.log(error)
+      console.error(error)
       captureError(error, 'clerk_resend_mfa_code');
       alert('Failed to resend code. Please try again.');
     }

@@ -74,7 +74,7 @@ export default function SignUp() {
         await signUp.finalize({
           navigate: ({ session, decorateUrl }) => {
             if (session?.currentTask) {
-              console.log(session?.currentTask);
+              console.info(session?.currentTask);
               return;
             }
 

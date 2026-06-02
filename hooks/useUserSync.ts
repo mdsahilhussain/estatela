@@ -45,7 +45,7 @@ export const useUserSync = () => {
         .from("users")
         .insert({
           clerk_id: user!.id,
-          email: user!.emailAddresses[0].emailAddress,
+          email: user!.emailAddresses[0]?.emailAddress,
           first_name: user!.firstName,
           last_name: user!.lastName,
           avatar_url: user!.imageUrl,

@@ -116,8 +116,8 @@ export default function SettingScreen() {
         <Text className="text-xl font-bold text-foreground">
           {user.firstName} {user.lastName}
         </Text>
-        <Text className="text-fm mt-1">
-          {user.emailAddresses[0].emailAddress}
+        <Text className="text-sm mt-1">
+          {user.emailAddresses[0]?.emailAddress || user.primaryEmailAddress?.emailAddress || "No email"}
         </Text>
       </View>
 

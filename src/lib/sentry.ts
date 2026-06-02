@@ -1,5 +1,5 @@
-import Constants from "expo-constants";
 import * as Sentry from "@sentry/react-native";
+import Constants from "expo-constants";
 import type { ComponentType } from "react";
 
 type SentryUserContext = {
@@ -42,6 +42,11 @@ export function initSentry() {
 
   const dsn = process.env.EXPO_PUBLIC_SENTRY_DSN;
 
+  if (!dsn) {
+    console.warn("Sentry DSN is not set. Sentry will not be initialized.");
+    return;
+  }
+
   Sentry.init({
     dsn,
     enabled: Boolean(dsn),
@@ -54,6 +59,23 @@ export function initSentry() {
     enableNativeCrashHandling: true,
     enableAppHangTracking: !__DEV__,
     tracesSampleRate: __DEV__ ? 1.0 : 0.1,
+  
+    beforeSend(event) {
+      if (event.user) {
+        delete event.user.email;
+        delete event.user.ip_address;
+        delete event.user.username;
+      }
+  
+      if (event.extra) {
+        delete event.extra.email;
+        delete event.extra.identifier;
+        delete event.extra.token;
+        delete event.extra.phone;
+      }
+  
+      return event;
+    },
   });
 
   Sentry.setTag("app.version", appVersion);
@@ -82,12 +104,18 @@ export function captureError(
   context?: string,
   data?: BreadcrumbData
 ) {
-  if (typeof error === "object" && error !== null) {
-    if (reportedErrors.has(error)) return;
-    reportedErrors.add(error);
-  }
+  const sanitizedError =
+    error instanceof Error
+      ? {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+        }
+      : {
+          message: String(error),
+        };
 
-  Sentry.captureException(error, {
+  Sentry.captureException(sanitizedError, {
     tags: context ? { error_context: context } : undefined,
     extra: data,
   });

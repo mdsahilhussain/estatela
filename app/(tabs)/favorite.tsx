@@ -32,7 +32,7 @@ export default function FavoriteScreen() {
 
       setSaved((data as unknown as SavedProperty[]) ?? []);
     } catch (error) {
-      console.log("Error fetching saved properties:", error);
+      console.info("Error fetching saved properties:", error);
       captureError(error, "fetch_saved_properties");
     } finally {
       setLoading(false);

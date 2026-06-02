@@ -58,7 +58,7 @@ export default function PropertyDetail() {
       setProperty(data as unknown as Property ?? null);
       setLoading(false);
     } catch (error) {
-      console.log("Error fetching property:", error);
+      console.error("Error fetching property:", error);
       captureError(error, "fetch_property_detail", { propertyId: id });
     } finally {
       setLoading(false);
@@ -106,16 +106,12 @@ export default function PropertyDetail() {
       { text: 'Cancel', style: "cancel" }, {
         text: 'Yes, Mark as Sold',
         onPress: async () => {
-          const { data, error } = await authSupabase
+          const { error } = await authSupabase
             .from("properties")
             .update({ is_sold: true })
             .eq("id", id)
             .select();
 
-          console.log("property data:", data);
-          console.log("property id:", property?.id);
-          console.log("property error:", error);
-          console.log("property id:", id);
           if (error) {
             captureError(error, "mark_property_sold", { propertyId: id });
             Alert.alert("Error", "Failed to mark property as sold. Please try again.");

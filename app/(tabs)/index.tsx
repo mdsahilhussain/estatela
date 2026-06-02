@@ -49,7 +49,7 @@ export default function HomeScreen() {
       setFeatured(featuredData ?? []);
       setRecommended(recommendedData ?? []);
     } catch (error) {
-      console.log("Error fetching properties:", error);
+      console.error("Error fetching properties:", error);
       captureError(error, "fetch_home_properties");
     } finally {
       setLoading(false);

@@ -86,7 +86,7 @@ export default function SearchScreen() {
 
       setData(data ?? [])
     } catch (error) {
-      console.log('Error message', error)
+      console.error('Error message', error)
       captureError(error, 'search_properties', {
         search,
         type,
