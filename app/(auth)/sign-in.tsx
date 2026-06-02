@@ -1,4 +1,5 @@
 import { icons } from '@/constants/icons';
+import { captureError, sentryBreadcrumbs } from '@/src/lib/sentry';
 import { useAuth, useSignIn } from '@clerk/expo';
 import { type Href, Link, router } from 'expo-router';
 import { styled } from 'nativewind';
@@ -39,12 +40,12 @@ export default function SignIn() {
         alert(error.message)
         return
       }
-      console.log(signIn.status, "11111")
       if (signIn.status === 'complete') {
+        sentryBreadcrumbs.login('password');
         await signIn.finalize({
           navigate: ({ session, decorateUrl }) => {
             if (session?.currentTask) {
-              console.log(session.currentTask)
+              console.info(session.currentTask)
               return
             }
 
@@ -65,7 +66,7 @@ export default function SignIn() {
         // Handle MFA if needed (not implemented in this basic flow)
         // await signIn.mfa.sendPhoneCode();
         await signIn.mfa.sendEmailCode();
-        console.log('MFA required');
+        console.info('MFA required');
       } else if (signIn.status === 'needs_client_trust') {
         const emailCodeFactor = signIn.supportedSecondFactors.find(
           (factor) => factor.strategy === 'email_code'
@@ -76,41 +77,56 @@ export default function SignIn() {
       } else {
         console.error('Sign-in attempt not complete:', signIn)
       }
-    } catch (err) {
-      console.error('Sign-in error:', err);
+    } catch (error: unknown) {
+      console.error('Sign-in error:', error);
+      if (error instanceof Error) {
+        captureError({
+          message: error.message,
+        }, 'clerk_sign_in', { method: 'password' });
+      }
       alert('An unexpected error occurred. Please try again.');
     }
   }
 
   const handleVerify = async () => {
-    await signIn.mfa.verifyEmailCode({
-      code,
-    });
-
-    if (signIn.status === 'complete') {
-      await signIn.finalize({
-        navigate: ({ session, decorateUrl }) => {
-          if (session?.currentTask) {
-            console.log(session?.currentTask);
-            return;
-          }
-
-          const url = decorateUrl('/(tabs)');
-          if (url.startsWith('http')) {
-            // Only use window.location on web platform
-            if (typeof window !== 'undefined' && window.location) {
-              window.location.href = url;
-            } else {
-              // On native, just use router navigation
-              router.replace('/(tabs)' as Href);
-            }
-          } else {
-            router.replace(url as Href);
-          }
-        },
+    try {
+      await signIn.mfa.verifyEmailCode({
+        code,
       });
-    } else {
-      console.error('Sign-in attempt not complete:', signIn);
+
+      if (signIn.status === 'complete') {
+        sentryBreadcrumbs.login('mfa_email_code');
+        await signIn.finalize({
+          navigate: ({ session, decorateUrl }) => {
+            if (session?.currentTask) {
+              console.info(session?.currentTask);
+              return;
+            }
+
+            const url = decorateUrl('/(tabs)');
+            if (url.startsWith('http')) {
+              // Only use window.location on web platform
+              if (typeof window !== 'undefined' && window.location) {
+                window.location.href = url;
+              } else {
+                // On native, just use router navigation
+                router.replace('/(tabs)' as Href);
+              }
+            } else {
+              router.replace(url as Href);
+            }
+          },
+        });
+      } else {
+        console.error('Sign-in attempt not complete:', signIn);
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        captureError({
+          message: error.message,
+        }, 'clerk_sign_in_mfa', { method: 'mfa_email_code' });
+      }
+      alert('Failed to verify code. Please try again.');
     }
   };
 
@@ -120,7 +136,8 @@ export default function SignIn() {
       await signIn.mfa.sendEmailCode();
       alert('Verification code sent!');
     } catch (error) {
-      console.log(error)
+      console.error(error)
+      captureError(error, 'clerk_resend_mfa_code');
       alert('Failed to resend code. Please try again.');
     }
   };
@@ -133,7 +150,7 @@ export default function SignIn() {
   // Show verification screen if email needs verification
   if (signIn.status === 'needs_client_trust' || signIn.status === 'needs_second_factor') {
     return (
-      <SafeAreaView className="auth-safe-area">
+      <SafeAreaView className="screen-safe-area">
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           className="auth-screen"
@@ -203,7 +220,7 @@ export default function SignIn() {
   }
 
   return (
-    <SafeAreaView className='auth-safe-area'>
+    <SafeAreaView className='screen-safe-area'>
       <KeyboardAvoidingView behavior={Platform.OS === "android" ? "height" : 'padding'}
         className='auth-screen'>
         <ScrollView className='auth-scroll' keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>

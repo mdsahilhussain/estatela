@@ -4,6 +4,7 @@ import { icons } from "@/constants/icons";
 import { images } from "@/constants/images";
 import "@/global.css";
 import { supabase } from "@/lib/supabase";
+import { captureError } from "@/src/lib/sentry";
 import { useUser } from "@clerk/expo";
 import { useFocusEffect, useRouter } from "expo-router";
 import { styled } from "nativewind";
@@ -13,7 +14,7 @@ import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
 
 const SafeAreaView = styled(RNSafeAreaView);
 
-export default function App() {
+export default function HomeScreen() {
   const { user } = useUser();
   const router = useRouter();
 
@@ -21,6 +22,7 @@ export default function App() {
   const [recommended, setRecommended] = useState<Property[]>([]);
   const [loading, setLoading] = useState<boolean>();
 
+  // Fetch featured and recommended properties in parallel --------
   const fetchProperties = async () => {
     setLoading(true);
     try {
@@ -47,7 +49,8 @@ export default function App() {
       setFeatured(featuredData ?? []);
       setRecommended(recommendedData ?? []);
     } catch (error) {
-      console.log("Error fetching properties:", error);
+      console.error("Error fetching properties:", error);
+      captureError(error, "fetch_home_properties");
     } finally {
       setLoading(false);
     }
@@ -62,11 +65,10 @@ export default function App() {
   function onUnsave() {}
 
   return (
-    <SafeAreaView className="auth-safe-area" accessibilityLabel="Home Screen">
+    <SafeAreaView className="screen-safe-area" accessibilityLabel="Home Screen">
       <FlatList
         data={recommended}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={{ paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
           <View className="list-header-container">
@@ -97,7 +99,7 @@ export default function App() {
               {loading ? (
                 <ActivityIndicator
                   size="small"
-                  color="#2563EB"
+                  color="#0a0a0a"
                   className="py-10"
                 />
               ) : (

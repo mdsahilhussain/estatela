@@ -15,11 +15,11 @@ import {
 
 
 const chip = (active: boolean) =>
-    `px-4 py-2 rounded-full border-[.8px] ${active ? "bg-accent border-accent" : "bg-background border-border"
+    `px-4 py-2 rounded-full border-[.8px] ${active ? "bg-blue-100 border-accent" : "bg-background border-border/40"
     }`;
 
 const chipText = (active: boolean) =>
-    `text-sm font-semibold ${active ? "text-background" : "text-foreground"}`;
+    `text-sm font-semibold ${active ? "text-accent" : "text-foreground"}`;
 
 export default function FilterModal({
     visible,
@@ -121,13 +121,13 @@ export default function FilterModal({
                                 key={String(item.value)}
                                 onPress={() => setBedrooms(item.value)}
                                 className={clsx("flex-1 items-center py-3 rounded-2xl border", bedrooms === item.value
-                                    ? "bg-accent border-accent"
-                                    : "bg-background border-border"
+                                    ? "bg-blue-100 border-accent"
+                                    : "bg-background border-border/40"
                                 )}
                                 style={shadow}
                             >
                                 <Text
-                                    className={clsx("text-sm font-bold", bedrooms === item.value ? "text-background" : "text-border"
+                                    className={clsx("text-sm font-bold", bedrooms === item.value ? "text-accent" : "text-border"
                                     )}
                                 >
                                     {item.label}
@@ -191,8 +191,8 @@ export default function FilterModal({
                                         setMaxPrice(p.max);
                                     }}
                                     className={clsx("px-3 py-1.5 rounded-full border", active
-                                        ? "bg-accent/10 border-accent/30"
-                                        : "bg-background border-border"
+                                        ? "bg-blue-100 border-accent"
+                                        : "bg-background border-border/40"
                                     )}
                                 >
                                     <Text
@@ -209,17 +209,11 @@ export default function FilterModal({
                 </ScrollView>
 
                 {/* Apply Button */}
-                <View className="px-5 pb-8 pt-4 bg-white border-t border-gray-100">
+                <View className="px-5 pb-8 pt-4 bg-card border-t border-border/20">
                     <Pressable
                         onPress={handleApply}
-                        className="bg-accent rounded-2xl py-4 items-center"
-                        style={{
-                            shadowColor: "#2563EB",
-                            shadowOffset: { width: 0, height: 4 },
-                            shadowOpacity: 0.3,
-                            shadowRadius: 8,
-                            elevation: 4,
-                        }}
+                        className="bg-foreground rounded-2xl py-4 items-center"
+                        
                     >
                         <Text className="text-background font-bold text-base" numberOfLines={1}>
                             Apply Filters{activeCount > 0 ? ` (${activeCount})` : ""}

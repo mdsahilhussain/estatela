@@ -3,6 +3,7 @@ import PropertyCard from '@/components/PropertyCard';
 import { icons } from '@/constants/icons';
 import { supabase } from '@/lib/supabase';
 import { formatPrice } from '@/lib/utils';
+import { captureError, sentryBreadcrumbs } from '@/src/lib/sentry';
 import { useFilterStore } from '@/store/filterStore';
 import { useLocalSearchParams } from 'expo-router';
 import { styled } from 'nativewind';
@@ -12,7 +13,7 @@ import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
 
 const SafeAreaView = styled(RNSafeAreaView);
 
-export default function Search() {
+export default function SearchScreen() {
   const [showFilter, setShowFilter] = useState<boolean>(false)
   const [data, setData] = useState<Property[]>([])
   const [loading, setLoading] = useState<boolean>(false)
@@ -46,8 +47,17 @@ export default function Search() {
     maxPrice !== null
   ].filter(Boolean).length;
 
+
+  // Build dynamic query based on active filters ----------
   async function searchFilter() {
     setLoading(true)
+    sentryBreadcrumbs.search({
+      search,
+      type,
+      bedrooms,
+      minPrice,
+      maxPrice,
+    });
 
     try {
       let query = supabase.from('properties').select('*');
@@ -76,20 +86,26 @@ export default function Search() {
 
       setData(data ?? [])
     } catch (error) {
-      console.log('Error message', error)
+      console.error('Error message', error)
+      captureError(error, 'search_properties', {
+        search,
+        type,
+        bedrooms,
+        minPrice,
+        maxPrice,
+      });
     } finally {
       setLoading(false)
     }
   }
 
-
   useEffect(() => {
     searchFilter()
-  }, [search, type, bedrooms, minPrice, minPrice])
+  }, [search, type, bedrooms, minPrice, maxPrice])
 
   return (
-    <SafeAreaView accessibilityLabel="Search Screen" className='auth-safe-area pb-20'>
-      <Text accessibilityRole="header" className='filter-title'>Find Property</Text>
+    <SafeAreaView accessibilityLabel="Search Screen" className='screen-safe-area'>
+      <Text accessibilityRole="header" className='screen-title'>Find Property</Text>
       <View className='filter-searchbar'>
         <View className="filter-search-inputfield">
           <Image source={icons.input_search} alt="search icon" className="home-search-icon" />
@@ -114,7 +130,7 @@ export default function Search() {
           )}
         </Pressable>
       </View>
-
+      {/* Active Filters Count  */}
       {
         activeFilterCount > 0 && (
           <View className='filter-active-count-list'>
@@ -155,6 +171,7 @@ export default function Search() {
         )
       }
 
+      {/* Properties List  */}
       <FlatList
         data={data}
         keyExtractor={(item) => item.id}
@@ -171,7 +188,7 @@ export default function Search() {
             <Text className="info-text text-center">
               Try a different search or adjust filters.
             </Text>
-          </View>) : (<ActivityIndicator size='large' color="#2563EB" />)
+          </View>) : (<ActivityIndicator size='large' color="#0a0a0a" />)
         }
       />
 
