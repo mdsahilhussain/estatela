@@ -1,11 +1,17 @@
-import PropertyCard from '@/components/PropertyCard';
-import { useSupabase } from '@/hooks/useSupabase';
-import { captureError } from '@/src/lib/sentry';
-import { useAuth } from '@clerk/expo';
-import { useFocusEffect, useRouter } from 'expo-router';
-import { styled } from 'nativewind';
-import { useCallback, useState } from 'react';
-import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native';
+import PropertyCard from "@/components/PropertyCard";
+import { useSupabase } from "@/hooks/useSupabase";
+import { captureError } from "@/lib/sentry";
+import { useAuth } from "@clerk/expo";
+import { useFocusEffect, useRouter } from "expo-router";
+import { styled } from "nativewind";
+import { useCallback, useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  Text,
+  View,
+} from "react-native";
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
 
 const SafeAreaView = styled(RNSafeAreaView);
@@ -23,10 +29,10 @@ export default function FavoriteScreen() {
     setLoading(true);
     try {
       const { data, error } = await authSupabase
-        .from('saved_properties')
-        .select('id, property_id, properties(*)')
-        .eq('user_clerk_id', userId)
-        .order('created_at', { ascending: false });
+        .from("saved_properties")
+        .select("id, property_id, properties(*)")
+        .eq("user_clerk_id", userId)
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
 
@@ -37,22 +43,25 @@ export default function FavoriteScreen() {
     } finally {
       setLoading(false);
     }
-  }, [userId])
+  }, [userId]);
 
   useFocusEffect(
     useCallback(() => {
       fetchSavedProperties();
     }, [fetchSavedProperties])
-  )
+  );
 
   return (
-    <SafeAreaView className='screen-safe-area' accessibilityLabel='Favorite Screen'>
-      <View className='mb-4'>
+    <SafeAreaView
+      className="screen-safe-area"
+      accessibilityLabel="Favorite Screen"
+    >
+      <View className="mb-4">
         <Text className="text-2xl font-bold text-gray-900">Saved</Text>
         {!loading && (
           <Text className="text-sm text-gray-400 mt-1">
-            {saved.length} {saved.length === 1 ? "property" : "properties"} {" "}
-             saved
+            {saved.length} {saved.length === 1 ? "property" : "properties"}{" "}
+            saved
           </Text>
         )}
       </View>
@@ -100,5 +109,5 @@ export default function FavoriteScreen() {
         />
       )}
     </SafeAreaView>
-  )
+  );
 }

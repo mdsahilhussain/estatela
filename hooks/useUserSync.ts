@@ -1,4 +1,4 @@
-import { captureError, clearSentryUser, setSentryUser } from "@/src/lib/sentry";
+import { captureError, clearSentryUser, setSentryUser } from "@/lib/sentry";
 import { useUserStore } from "@/store/userStore";
 import { useUser } from "@clerk/expo";
 import { useEffect } from "react";

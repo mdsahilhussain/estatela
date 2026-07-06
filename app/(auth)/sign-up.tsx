@@ -1,5 +1,5 @@
 import { icons } from '@/constants/icons';
-import { captureError, sentryBreadcrumbs } from '@/src/lib/sentry';
+import { captureError, sentryBreadcrumbs } from '@/lib/sentry';
 import { useAuth, useSignUp } from '@clerk/expo';
 import { type Href, Link, router } from 'expo-router';
 import { styled } from 'nativewind';

@@ -1,27 +1,28 @@
 import { icons } from "@/constants/icons";
 import { useSavedProperty } from "@/hooks/useSavedProperty";
 import { useSupabase } from "@/hooks/useSupabase";
+import { captureError, sentryBreadcrumbs } from "@/lib/sentry";
 import { supabase } from "@/lib/supabase";
 import { formatPrice } from "@/lib/utils";
-import { captureError, sentryBreadcrumbs } from "@/src/lib/sentry";
+import { AppErrorBoundary } from "@/providers/error-boundary";
 import { useUserStore } from "@/store/userStore";
 import clsx from "clsx";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { styled } from "nativewind";
 import React, { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
-  Alert,
-  Dimensions,
-  FlatList,
-  Image,
-  Linking,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  Pressable,
-  ScrollView,
-  Text,
-  View
+    ActivityIndicator,
+    Alert,
+    Dimensions,
+    FlatList,
+    Image,
+    Linking,
+    NativeScrollEvent,
+    NativeSyntheticEvent,
+    Pressable,
+    ScrollView,
+    Text,
+    View
 } from "react-native";
 import ImageViewing from "react-native-image-viewing";
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
@@ -31,6 +32,23 @@ const { width } = Dimensions.get("window");
 const SafeAreaView = styled(RNSafeAreaView);
 
 export default function PropertyDetail() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const [resetKey, setResetKey] = useState(0);
+
+  return (
+    <AppErrorBoundary
+      boundaryName="property_detail"
+      resetKeys={[id, resetKey]}
+      onReset={() => setResetKey((key) => key + 1)}
+      fallbackTitle="Property could not load"
+      fallbackMessage="We could not render this property. Try again to reload its photos, map, and details."
+    >
+      <PropertyDetailContent key={`${id ?? "property"}-${resetKey}`} />
+    </AppErrorBoundary>
+  );
+}
+
+function PropertyDetailContent() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const isAdmin = useUserStore((state) => state?.isAdmin ?? false)

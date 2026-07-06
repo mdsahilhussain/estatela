@@ -1,7 +1,9 @@
 import { icons } from "@/constants/icons";
+import { AppErrorBoundary } from "@/providers/error-boundary";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { styled } from "nativewind";
+import { useState } from "react";
 import { Image, Linking, Pressable, Text, View } from "react-native";
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
 import { WebView } from 'react-native-webview';
@@ -9,6 +11,26 @@ import { WebView } from 'react-native-webview';
 const SafeAreaView = styled(RNSafeAreaView);
 
 export default function MapScreen() {
+  const { latitude, longitude } = useLocalSearchParams<{
+    latitude: string;
+    longitude: string;
+  }>();
+  const [resetKey, setResetKey] = useState(0);
+
+  return (
+    <AppErrorBoundary
+      boundaryName="property_map"
+      resetKeys={[latitude, longitude, resetKey]}
+      onReset={() => setResetKey((key) => key + 1)}
+      fallbackTitle="Map could not load"
+      fallbackMessage="We could not render this location view. Try again, or go back to the property details."
+    >
+      <MapScreenContent key={`${latitude}-${longitude}-${resetKey}`} />
+    </AppErrorBoundary>
+  );
+}
+
+function MapScreenContent() {
   const { latitude, longitude, title, address } = useLocalSearchParams<{
     latitude: string;
     longitude: string;

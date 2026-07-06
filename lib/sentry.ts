@@ -104,20 +104,26 @@ export function captureError(
   context?: string,
   data?: BreadcrumbData
 ) {
-  const sanitizedError =
-    error instanceof Error
-      ? {
-          name: error.name,
-          message: error.message,
-          stack: error.stack,
-        }
-      : {
-          message: String(error),
-        };
+  if (typeof error === "object" && error !== null) {
+    if (reportedErrors.has(error)) return;
+    reportedErrors.add(error);
+  }
 
-  Sentry.captureException(sanitizedError, {
+  const exception =
+    error instanceof Error
+      ? error
+      : new Error(
+          typeof error === "string"
+            ? error
+            : "A non-error exception was captured"
+        );
+
+  Sentry.captureException(exception, {
     tags: context ? { error_context: context } : undefined,
-    extra: data,
+    extra: {
+      ...data,
+      originalError: error instanceof Error ? undefined : error,
+    },
   });
 }
 

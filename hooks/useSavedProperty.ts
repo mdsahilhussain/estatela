@@ -1,5 +1,5 @@
 import { useSupabase } from "@/hooks/useSupabase";
-import { captureError, sentryBreadcrumbs } from "@/src/lib/sentry";
+import { captureError, sentryBreadcrumbs } from "@/lib/sentry";
 import { useAuth } from "@clerk/expo";
 import { useEffect, useState } from "react";
 

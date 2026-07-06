@@ -14,7 +14,7 @@ import {
   View,
 } from "react-native";
 
-import { captureError, clearSentryUser, sentryBreadcrumbs } from "@/src/lib/sentry";
+import { captureError, clearSentryUser, sentryBreadcrumbs } from "@/lib/sentry";
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
 
 const SafeAreaView = styled(RNSafeAreaView);
@@ -93,7 +93,10 @@ export default function SettingScreen() {
   }
 
   return (
-    <SafeAreaView className="screen-safe-area" accessibilityLabel='Setting Screen'>
+    <SafeAreaView
+      className="screen-safe-area"
+      accessibilityLabel="Setting Screen"
+    >
       {/* Avatar + Name */}
       <View className="items-center py-8">
         <View className="relative">
@@ -117,7 +120,9 @@ export default function SettingScreen() {
           {user.firstName} {user.lastName}
         </Text>
         <Text className="text-sm mt-1">
-          {user.emailAddresses[0]?.emailAddress || user.primaryEmailAddress?.emailAddress || "No email"}
+          {user.emailAddresses[0]?.emailAddress ||
+            user.primaryEmailAddress?.emailAddress ||
+            "No email"}
         </Text>
       </View>
 
@@ -157,8 +162,14 @@ export default function SettingScreen() {
           onPress={handleSignOut}
           className="flex-row items-center justify-center gap-2 bg-destructive/10 py-4 rounded-2xl border border-destructive/30"
         >
-          <Ionicons name="log-out-outline" size={20} className="text-destructive" />
-          <Text className="text-destructive font-semibold text-base">Sign Out</Text>
+          <Ionicons
+            name="log-out-outline"
+            size={20}
+            className="text-destructive"
+          />
+          <Text className="text-destructive font-semibold text-base">
+            Sign Out
+          </Text>
         </Pressable>
       </View>
     </SafeAreaView>
@@ -183,7 +194,11 @@ function MenuItem({
       <Text className="flex-1 text-foreground font-medium text-base">
         {label}
       </Text>
-      <Ionicons name="chevron-forward" size={18} className="text-muted-foreground" />
+      <Ionicons
+        name="chevron-forward"
+        size={18}
+        className="text-muted-foreground"
+      />
     </Pressable>
   );
 }
