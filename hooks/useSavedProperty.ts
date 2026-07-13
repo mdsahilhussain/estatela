@@ -1,72 +1,82 @@
 import { useSupabase } from "@/hooks/useSupabase";
+import { queryKeys } from "@/lib/react-query";
 import { captureError, sentryBreadcrumbs } from "@/lib/sentry";
+import {
+  fetchSavedPropertyId,
+  saveProperty,
+  unsaveProperty,
+} from "@/lib/services/savedProperties";
 import { useAuth } from "@clerk/expo";
-import { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function useSavedProperty(propertyId: string, onUnsave?: () => void) {
   const { userId } = useAuth();
   const authSupabase = useSupabase();
+  const queryClient = useQueryClient();
 
-  const [isSaved, setIsSaved] = useState(false);
-  const [saveLoading, setSaveLoading] = useState(false);
+  const savedStatusQuery = useQuery({
+    queryKey:
+      userId && propertyId
+        ? queryKeys.favorites.status(userId, propertyId)
+        : queryKeys.favorites.status("anonymous", propertyId || "unknown"),
+    queryFn: () => fetchSavedPropertyId(authSupabase, userId!, propertyId),
+    enabled: Boolean(userId && propertyId),
+  });
 
-  useEffect(() => {
-    checkIfSaved();
-  }, [propertyId, userId]);
+  const isSaved = Boolean(savedStatusQuery.data);
 
-  const checkIfSaved = async () => {
-    if (!userId) return;
-    try {
-      const { data, error } = await authSupabase
-        .from("saved_properties")
-        .select("id")
-        .eq("user_clerk_id", userId)
-        .eq("property_id", propertyId)
-        .single();
+  const toggleSaveMutation = useMutation({
+    mutationFn: async () => {
+      if (!userId || !propertyId) return;
 
-      if (error && error.code !== "PGRST116") throw error;
-
-      setIsSaved(!!data);
-    } catch (error) {
-      captureError(error, "check_saved_property", { propertyId });
-    }
-  };
-
-  const toggleSave = async () => {
-    if (!userId || saveLoading) return;
-    setSaveLoading(true);
-    try {
       if (isSaved) {
-        const { error } = await authSupabase
-          .from("saved_properties")
-          .delete()
-          .eq("user_clerk_id", userId)
-          .eq("property_id", propertyId);
-
-        if (error) throw error;
-
-        sentryBreadcrumbs.favorites("unsave", propertyId);
-        setIsSaved(false);
-        onUnsave?.();
-      } else {
-        const { error } = await authSupabase
-          .from("saved_properties")
-          .insert({ user_clerk_id: userId, property_id: propertyId });
-
-        if (error) throw error;
-
-        sentryBreadcrumbs.favorites("save", propertyId);
-        setIsSaved(true);
+        await unsaveProperty(authSupabase, userId, propertyId);
+        return "unsave" as const;
       }
-    } catch (error) {
+
+      await saveProperty(authSupabase, userId, propertyId);
+      return "save" as const;
+    },
+    onSuccess: async (action) => {
+      if (!userId || !propertyId || !action) return;
+
+      sentryBreadcrumbs.favorites(action, propertyId);
+
+      if (action === "unsave") {
+        onUnsave?.();
+      }
+
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.favorites.status(userId, propertyId),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.favorites.list(userId),
+        }),
+      ]);
+    },
+    onError: (error) => {
       captureError(error, "toggle_saved_property", {
         propertyId,
         action: isSaved ? "unsave" : "save",
       });
-    } finally {
-      setSaveLoading(false);
-    }
+    },
+  });
+
+  const toggleSave = () => {
+    if (
+      !userId ||
+      !propertyId ||
+      savedStatusQuery.isLoading ||
+      toggleSaveMutation.isPending
+    )
+      return;
+    toggleSaveMutation.mutate();
   };
 
-  return { isSaved, saveLoading, toggleSave };
+  return {
+    isSaved,
+    saveLoading: savedStatusQuery.isLoading || toggleSaveMutation.isPending,
+    toggleSave,
+  };
 }

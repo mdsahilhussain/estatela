@@ -1,9 +1,13 @@
 import "@/global.css";
+import { OfflineBanner } from "@/components/ui/OfflineBanner";
 import { useUserSync } from "@/hooks/useUserSync";
+import { queryClient } from "@/lib/react-query";
 import { initSentry, wrapWithSentry } from "@/lib/sentry";
 import { AppErrorBoundary } from "@/providers/error-boundary";
+import { NetworkProvider } from "@/providers/network";
 import { ClerkProvider, useAuth } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
 
 import { SplashScreen, Stack } from "expo-router";
@@ -83,9 +87,14 @@ function RootLayout() {
       showBackButton={false}
       fallbackMessage="The app hit an unexpected problem. Please try again."
     >
-      <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
-        <RootLayoutContent />
-      </ClerkProvider>
+      <NetworkProvider>
+        <QueryClientProvider client={queryClient}>
+          <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+            <RootLayoutContent />
+            <OfflineBanner />
+          </ClerkProvider>
+        </QueryClientProvider>
+      </NetworkProvider>
     </AppErrorBoundary>
   );
 }

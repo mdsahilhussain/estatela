@@ -3,13 +3,12 @@ import PropertyCard from "@/components/PropertyCard";
 import { icons } from "@/constants/icons";
 import { images } from "@/constants/images";
 import "@/global.css";
-import { captureError } from "@/lib/sentry";
-import { supabase } from "@/lib/supabase";
+import { useHomeProperties } from "@/hooks/useProperties";
 import { AppErrorBoundary } from "@/providers/error-boundary";
 import { useUser } from "@clerk/expo";
-import { useFocusEffect, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { styled } from "nativewind";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -42,51 +41,15 @@ function HomeScreenContent() {
   const { user } = useUser();
   const router = useRouter();
 
-  const [featured, setFeatured] = useState<Property[]>([]);
-  const [recommended, setRecommended] = useState<Property[]>([]);
-  const [loading, setLoading] = useState<boolean>();
+  const {
+    data,
+    isError,
+    isLoading,
+    refetch,
+  } = useHomeProperties();
 
-  // Fetch featured and recommended properties in parallel --------
-  const fetchProperties = async () => {
-    setLoading(true);
-    try {
-      const [
-        { data: featuredData, error: featuredError },
-        { data: recommendedData, error: recommendedError },
-      ] = await Promise.all([
-        supabase
-          .from("properties")
-          .select("*")
-          .eq("is_featured", true)
-          .order("created_at", { ascending: false }),
-
-        supabase
-          .from("properties")
-          .select("*")
-          .eq("is_featured", false)
-          .order("created_at", { ascending: false }),
-      ]);
-
-      if (featuredError) throw featuredError;
-      if (recommendedError) throw recommendedError;
-
-      console.log(featuredData, "111111")
-
-      setFeatured(featuredData ?? []);
-      setRecommended(recommendedData ?? []);
-    } catch (error) {
-      console.error("Error fetching properties:", error);
-      captureError(error, "fetch_home_properties");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchProperties();
-    }, [])
-  );
+  const featured = data?.featured ?? [];
+  const recommended = data?.recommended ?? [];
 
   function onUnsave() {}
 
@@ -144,12 +107,21 @@ function HomeScreenContent() {
                 Featured
               </Text>
 
-              {loading ? (
+              {isLoading ? (
                 <ActivityIndicator
                   size="small"
                   color="#0a0a0a"
                   className="py-10"
                 />
+              ) : isError && !data? (
+                <View className="py-8 items-start">
+                  <Text className="info-text mb-3">
+                    Could not load featured properties.
+                  </Text>
+                  <Pressable onPress={() => refetch()} className="auth-button">
+                    <Text className="auth-button-text">Try Again</Text>
+                  </Pressable>
+                </View>
               ) : (
                 <FlatList
                   data={featured}
@@ -172,8 +144,19 @@ function HomeScreenContent() {
           <PropertyCard property={item} onUnsave={onUnsave} showSave={false} />
         )}
         ListEmptyComponent={
-          !loading ? (
-            <Text className="home-empty-state">No properties found.</Text>
+          !isLoading ? (
+            isError ? (
+              <View className="items-center py-10">
+                <Text className="home-empty-state">
+                  Could not load recommended properties.
+                </Text>
+                <Pressable onPress={() => refetch()} className="auth-button">
+                  <Text className="auth-button-text">Try Again</Text>
+                </Pressable>
+              </View>
+            ) : (
+              <Text className="home-empty-state">No properties found.</Text>
+            )
           ) : null
         }
       />
